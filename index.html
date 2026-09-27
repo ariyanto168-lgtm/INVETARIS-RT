@@ -9,7 +9,7 @@
     <style>
         body { background-color: #f4f6f9; padding-bottom: 90px; }
         .card-stat { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;}
-        .card-stat:active { transform: scale(0.95); } /* Efek saat kartu diklik */
+        .card-stat:active { transform: scale(0.95); }
         .table-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;}
         
         .bottom-navbar {
@@ -46,15 +46,17 @@
 
 <div id="loader"><div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3 text-primary fw-bold">Memuat Data...</h4></div>
 
+<!-- Master Warga Datalist untuk dropdown -->
+<datalist id="data-warga-list"></datalist>
+
 <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
     <div class="container d-flex justify-content-between">
         <span class="navbar-brand mb-0 h1 fw-bold"><i class="fas fa-boxes text-warning"></i> INVENTARIS RT</span>
-        <span class="badge bg-secondary">v1.5</span>
+        <span class="badge bg-secondary">v1.6</span>
     </div>
 </nav>
 
 <div class="container">
-    <!-- KARTU DASHBOARD AKTIF BISA DIKLIK -->
     <div class="row mb-3">
         <div class="col-4">
             <div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')">
@@ -76,14 +78,16 @@
         </div>
     </div>
 
-    <!-- LIST TRANSAKSI CEPAT -->
+    <!-- LIST CEPAT -->
     <div class="row mb-4">
+        <!-- Sedang Dipinjam -->
         <div class="col-md-6 mb-3">
             <div class="p-3 rounded" style="background-color: #fff8e1; border: 1px solid #ffecb3;">
                 <h6 class="fw-bold text-dark border-bottom border-warning pb-2 mb-3"><i class="fas fa-hand-holding text-warning"></i> Sedang Dipinjam Warga</h6>
                 <div id="dash-pinjam-list"></div>
             </div>
         </div>
+        <!-- Telah Dikembalikan -->
         <div class="col-md-6 mb-3">
             <div class="p-3 rounded" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;">
                 <h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6>
@@ -92,7 +96,6 @@
         </div>
     </div>
 
-    <!-- TABEL INVENTARIS -->
     <div class="table-container" id="section-inventaris">
         <h5 class="fw-bold mb-3"><i class="fas fa-list text-primary"></i> Data Master Inventaris</h5>
         <div class="table-responsive">
@@ -105,7 +108,6 @@
         </div>
     </div>
 
-    <!-- TABEL TRANSAKSI -->
     <div class="table-container" id="section-transaksi">
         <h5 class="fw-bold mb-3"><i class="fas fa-history text-secondary"></i> Riwayat Transaksi Keseluruhan</h5>
         <div class="table-responsive">
@@ -118,7 +120,6 @@
         </div>
     </div>
 
-    <!-- TABEL DATA WARGA (BARU) -->
     <div class="table-container" id="section-warga">
         <h5 class="fw-bold mb-3"><i class="fas fa-users text-info"></i> Master Data Warga</h5>
         <div class="table-responsive">
@@ -133,18 +134,38 @@
 
     <div class="text-center mt-5 mb-5 pb-4">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted">Versi Update Terkini: v1.5</small>
+        <small class="text-muted">Versi Update Terkini: v1.6</small>
     </div>
 </div>
 
+<!-- Bottom Navigation -->
 <nav class="bottom-navbar">
     <a href="#" class="nav-item-bottom" data-bs-toggle="modal" data-bs-target="#modalBarang"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
     <a href="#" class="nav-item-bottom" data-bs-toggle="modal" data-bs-target="#modalTransaksi"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
     <a href="#section-inventaris" class="nav-item-bottom" onclick="scrollToElement('section-inventaris')"><i class="fas fa-list-alt text-secondary"></i><span>Inventaris</span></a>
-    <!-- FUNGSI WARGA BERUBAH JADI INPUT DATA WARGA -->
     <a href="#" class="nav-item-bottom" data-bs-toggle="modal" data-bs-target="#modalWarga"><i class="fas fa-users text-info"></i><span>Warga</span></a>
-    <a href="#" class="nav-item-bottom" onclick="shareWA()"><i class="fab fa-whatsapp text-success"></i><span>Share</span></a>
+    <!-- Tombol Share sekarang memanggil fungsi untuk memunculkan Modal Preview WA -->
+    <a href="#" class="nav-item-bottom" onclick="previewWA()"><i class="fab fa-whatsapp text-success"></i><span>Share</span></a>
 </nav>
+
+<!-- Modal Preview WA (BARU) -->
+<div class="modal fade" id="modalPreviewWA" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fw-bold"><i class="fab fa-whatsapp"></i> Preview Laporan WA</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small mb-2">Periksa teks di bawah ini. Anda bisa mengubahnya sebelum dikirim.</p>
+        <textarea id="textPreviewWA" class="form-control mb-3 border-success" rows="12" style="font-family: monospace; font-size: 0.85rem;"></textarea>
+        <button type="button" class="btn btn-success w-100 fw-bold py-2 shadow-sm" onclick="kirimWA()">
+            <i class="fab fa-whatsapp"></i> Lanjut Kirim ke WA
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Tambah Barang -->
 <div class="modal fade" id="modalBarang" tabindex="-1">
@@ -162,7 +183,7 @@
   </div>
 </div>
 
-<!-- Modal Catat Transaksi -->
+<!-- Modal Transaksi -->
 <div class="modal fade" id="modalTransaksi" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
@@ -171,7 +192,6 @@
         <form id="formTransaksi">
             <div class="mb-3">
                 <label class="form-label fw-bold">Kategori Transaksi</label>
-                <!-- Opsi sudah disesuaikan agar auto status aktif -->
                 <select class="form-select border-dark" id="inpTransJenis" required>
                     <option value="Barang Di pinjam" selected>Barang Di pinjam</option>
                     <option value="Barang kembali">Barang kembali</option>
@@ -184,7 +204,6 @@
             
             <div class="mb-3">
                 <label class="form-label fw-bold text-primary">Pilih Data Warga</label>
-                <!-- Select Dropdown Otomatis dari Master Warga (Tidak Perlu Ngetik) -->
                 <select class="form-select border-primary" id="inpTransWarga" required>
                      <option value="">-- Pilih Warga --</option>
                 </select>
@@ -201,7 +220,7 @@
   </div>
 </div>
 
-<!-- Modal Tambah Data Warga (BARU) -->
+<!-- Modal Data Warga -->
 <div class="modal fade" id="modalWarga" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
@@ -211,14 +230,8 @@
       </div>
       <div class="modal-body">
         <form id="formWarga">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Nama Lengkap Warga</label>
-                <input type="text" class="form-control" id="inpWargaNama" placeholder="Contoh: Budi Santoso" required>
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold">Blok / RT / Keterangan</label>
-                <input type="text" class="form-control" id="inpWargaKet" placeholder="Contoh: Blok A / RT 01" required>
-            </div>
+            <div class="mb-3"><label class="form-label fw-bold">Nama Lengkap Warga</label><input type="text" class="form-control" id="inpWargaNama" placeholder="Contoh: Budi Santoso" required></div>
+            <div class="mb-4"><label class="form-label fw-bold">Blok / RT / Keterangan</label><input type="text" class="form-control" id="inpWargaKet" placeholder="Contoh: Blok A / RT 01" required></div>
             <button type="submit" class="btn btn-info text-white w-100 fw-bold py-2">Simpan Data Warga</button>
         </form>
       </div>
@@ -226,25 +239,25 @@
   </div>
 </div>
 
-
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // ==========================================
-    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxYhlZjTVfkYnWl5nIM_aJeqlxeqywO_-2ZY9e_Dho9BaVEss1OOXEUfJAYew2u8xDE2w/exec";
     // ==========================================
 
     let appData = null;
-    document.addEventListener("DOMContentLoaded", loadData);
+    let modalPreviewWaInstance = null; // Menyimpan instance modal WA
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Inisialisasi modal WA agar bisa dimunculkan dari JS
+        modalPreviewWaInstance = new bootstrap.Modal(document.getElementById('modalPreviewWA'));
+        loadData();
+    });
 
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
-
-    // Fungsi Scroll untuk Kartu Dashboard & Navigasi
-    function scrollToElement(id) {
-        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-    }
+    function scrollToElement(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
     async function loadData() {
         if(!GAS_URL || GAS_URL === "URL_GAS_ANDA_DISINI") return alert("Harap isi GAS_URL!");
@@ -257,9 +270,8 @@
                 renderDashboard(); 
                 renderBarang(); 
                 renderTransaksi(); 
-                renderWarga(); // Render dropdown warga
-            } 
-            else alert("Error: " + result.message);
+                renderWarga(); 
+            } else alert("Error: " + result.message);
         } catch(e) { alert("Gagal memuat database. Cek koneksi / URL."); }
         hideLoader();
     }
@@ -290,10 +302,24 @@
 
         const listPinjam = document.getElementById('dash-pinjam-list'); listPinjam.innerHTML = "";
         const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
-        if(dataPinjam.length === 0) listPinjam.innerHTML = `<small class="text-muted">Tidak ada warga meminjam barang.</small>`;
-        else dataPinjam.forEach(t => {
-            listPinjam.innerHTML += `<div class="list-warga-item border-left-warning"><div><strong class="text-dark fs-5">${t.warga}</strong><br><small class="text-muted">Pinjam: <b>${t.barang}</b> (Qty: ${t.jumlah})</small></div><button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="kembalikanBarang('${t.id}')"><i class="fas fa-check"></i> Kembali</button></div>`;
-        });
+        if(dataPinjam.length === 0) {
+            listPinjam.innerHTML = `<small class="text-muted">Tidak ada warga meminjam barang.</small>`;
+        } else {
+            dataPinjam.forEach(t => {
+                // Menambahkan nama petugas di render list pinjaman
+                listPinjam.innerHTML += `
+                <div class="list-warga-item border-left-warning">
+                    <div>
+                        <strong class="text-dark fs-5">${t.warga}</strong><br>
+                        <small class="text-muted">Pinjam: <b>${t.barang}</b> (Qty: ${t.jumlah})</small><br>
+                        <small class="text-secondary" style="font-size: 0.75rem;"><i class="fas fa-user-check"></i> Petugas: ${t.petugas}</small>
+                    </div>
+                    <button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="kembalikanBarang('${t.id}')">
+                        <i class="fas fa-check"></i> Kembali
+                    </button>
+                </div>`;
+            });
+        }
 
         const listKembali = document.getElementById('dash-kembali-list'); listKembali.innerHTML = "";
         const dataKembali = appData.transaksi.filter(t => t.status === 'Dikembalikan');
@@ -331,101 +357,8 @@
         });
     }
 
-    // Render Dropdown Input Warga & Tabel Warga
     function renderWarga() {
         const selectWarga = document.getElementById('inpTransWarga');
         const tableWarga = document.getElementById('table-warga-master');
         
-        selectWarga.innerHTML = "<option value=''>-- Pilih Warga --</option>";
-        tableWarga.innerHTML = "";
-
-        if(!appData.warga || appData.warga.length === 0) {
-            tableWarga.innerHTML = "<tr><td colspan='3' class='text-center text-muted'>Data warga masih kosong. Silakan tambah data warga.</td></tr>";
-            return;
-        }
-
-        // Urutkan abjad
-        appData.warga.sort((a,b) => a.nama.localeCompare(b.nama));
-        
-        appData.warga.forEach((w, index) => {
-            // Masukkan ke dropdown Catat Transaksi
-            selectWarga.innerHTML += `<option value="${w.nama}">${w.nama} (${w.keterangan})</option>`;
-            
-            // Masukkan ke Tabel Data Warga
-            tableWarga.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td class="fw-bold text-primary"><i class="fas fa-user-circle me-1"></i> ${w.nama}</td>
-                <td>${w.keterangan}</td>
-            </tr>`;
-        });
-    }
-
-    // FORM SUBMIT HANDLING
-    document.getElementById('formBarang').addEventListener('submit', function(e) {
-        e.preventDefault();
-        sendPostRequest({ action: 'tambah_barang', nama: document.getElementById('inpBarangNama').value, stok_awal: document.getElementById('inpBarangStok').value });
-        bootstrap.Modal.getInstance(document.getElementById('modalBarang')).hide(); this.reset();
-    });
-
-    document.getElementById('formWarga').addEventListener('submit', function(e) {
-        e.preventDefault();
-        sendPostRequest({ 
-            action: 'tambah_warga', 
-            nama_warga: document.getElementById('inpWargaNama').value, 
-            keterangan_warga: document.getElementById('inpWargaKet').value 
-        });
-        bootstrap.Modal.getInstance(document.getElementById('modalWarga')).hide(); this.reset();
-    });
-
-    document.getElementById('formTransaksi').addEventListener('submit', function(e) {
-        e.preventDefault();
-        sendPostRequest({
-            action: 'tambah_transaksi',
-            jenis: document.getElementById('inpTransJenis').value,
-            barang: document.getElementById('inpTransBarang').value,
-            jumlah: document.getElementById('inpTransJumlah').value,
-            warga: document.getElementById('inpTransWarga').value,
-            petugas: document.getElementById('inpTransPetugas').value
-        });
-        bootstrap.Modal.getInstance(document.getElementById('modalTransaksi')).hide(); this.reset(); 
-    });
-
-    function kembalikanBarang(idTrans) {
-        if(confirm("Konfirmasi: Apakah barang ini sudah diterima kembali secara utuh?")) {
-            sendPostRequest({ action: 'kembalikan_barang', id: idTrans });
-        }
-    }
-
-    function shareWA() {
-        if(!appData) return;
-        let d = new Date();
-        let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
-        
-        let text = "==========================\n";
-        text += " 📋 NOTA INVENTARIS RT \n";
-        text += "==========================\n";
-        text += "Tanggal : " + dateStr + "\n";
-        text += "Admin   : Sistem RT\n";
-        text += "--------------------------\n";
-        text += "📦 STATUS STOK BARANG :\n";
-        
-        appData.inventaris.forEach(b => { 
-            text += `> ${b.nama}\n   Tersedia : ${b.stok}\n   Dipinjam : ${b.dipinjam}\n`;
-        });
-        
-        text += "--------------------------\n";
-        
-        const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
-        if (dataPinjam.length > 0) {
-            text += "⚠️ SEDANG DIPINJAM :\n";
-            dataPinjam.forEach(p => { text += `- ${p.warga} (${p.barang}: ${p.jumlah})\n`; });
-            text += "--------------------------\n";
-        }
-        
-        text += "Terima kasih.\n==========================";
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    }
-</script>
-</body>
-</html>
+        selectWarga.innerH
