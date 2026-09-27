@@ -6,128 +6,81 @@
     <title>Inventaris Gudang RT</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background-color: #f4f6f9; padding-bottom: 90px; }
         .card-stat { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;}
         .card-stat:active { transform: scale(0.95); }
         .table-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;}
-        
-        .bottom-navbar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background-color: #ffffff;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
-            display: flex; justify-content: space-around;
-            padding: 12px 0 8px 0; z-index: 1030;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
-        }
-        .nav-item-bottom {
-            text-align: center; color: #6c757d; text-decoration: none; 
-            font-size: 0.75rem; font-weight: 500;
-            display: flex; flex-direction: column; align-items: center; width: 20%;
-            transition: 0.3s;
-        }
+        .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-around; padding: 12px 0 8px 0; z-index: 1030; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item-bottom { text-align: center; color: #6c757d; text-decoration: none; font-size: 0.75rem; font-weight: 500; display: flex; flex-direction: column; align-items: center; width: 20%; transition: 0.3s; }
         .nav-item-bottom i { font-size: 1.4rem; margin-bottom: 4px; }
         .nav-item-bottom:hover, .nav-item-bottom:active { color: #0d6efd; }
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; text-align: center; padding-top: 30vh; }
-        
         .list-warga-item { background-color: #ffffff; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .border-left-warning { border-left: 5px solid #ffc107; }
         .border-left-success { border-left: 5px solid #198754; }
-
         .pulse-warning { animation: pulse-warn 1.5s infinite; }
-        @keyframes pulse-warn {
-            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
-            70% { box-shadow: 0 0 0 12px rgba(255, 193, 7, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
-        }
+        @keyframes pulse-warn { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); } 70% { box-shadow: 0 0 0 12px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3 text-primary fw-bold">Memuat Data...</h4></div>
-
-<!-- Master Warga Datalist untuk dropdown -->
+<div id="loader"><div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3 text-primary fw-bold">Memproses...</h4></div>
 <datalist id="data-warga-list"></datalist>
 
 <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
     <div class="container d-flex justify-content-between">
         <span class="navbar-brand mb-0 h1 fw-bold"><i class="fas fa-boxes text-warning"></i> INVENTARIS RT</span>
-        <span class="badge bg-secondary">v1.8</span>
+        <span class="badge bg-secondary">v1.9</span>
     </div>
 </nav>
 
 <div class="container">
     <div class="row mb-3">
-        <div class="col-4">
-            <div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')">
-                <h6 style="font-size:0.7rem; margin-bottom:2px;">Macam Barang</h6>
-                <h4 class="mb-0 fw-bold" id="dash-macam">0</h4>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')">
-                <h6 style="font-size:0.7rem; margin-bottom:2px;">Stok Tersedia</h6>
-                <h4 class="mb-0 fw-bold" id="dash-stok">0</h4>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="scrollToElement('section-transaksi')">
-                <h6 style="font-size:0.7rem; margin-bottom:2px; font-weight:bold;">Jml Dipinjam</h6>
-                <h4 class="mb-0 fw-bold" id="dash-pinjam">0</h4>
-            </div>
-        </div>
+        <div class="col-4"><div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.7rem; margin-bottom:2px;">Macam Barang</h6><h4 class="mb-0 fw-bold" id="dash-macam">0</h4></div></div>
+        <div class="col-4"><div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.7rem; margin-bottom:2px;">Stok Tersedia</h6><h4 class="mb-0 fw-bold" id="dash-stok">0</h4></div></div>
+        <div class="col-4"><div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="scrollToElement('section-transaksi')"><h6 style="font-size:0.7rem; margin-bottom:2px; font-weight:bold;">Jml Dipinjam</h6><h4 class="mb-0 fw-bold" id="dash-pinjam">0</h4></div></div>
     </div>
 
-    <!-- LIST CEPAT -->
     <div class="row mb-4">
-        <!-- Sedang Dipinjam -->
-        <div class="col-md-6 mb-3">
-            <div class="p-3 rounded" style="background-color: #fff8e1; border: 1px solid #ffecb3;">
-                <h6 class="fw-bold text-dark border-bottom border-warning pb-2 mb-3"><i class="fas fa-hand-holding text-warning"></i> Sedang Dipinjam Warga</h6>
-                <div id="dash-pinjam-list"></div>
-            </div>
-        </div>
-        <!-- Telah Dikembalikan -->
-        <div class="col-md-6 mb-3">
-            <div class="p-3 rounded" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;">
-                <h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6>
-                <div id="dash-kembali-list"></div>
-            </div>
-        </div>
+        <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #fff8e1; border: 1px solid #ffecb3;"><h6 class="fw-bold text-dark border-bottom border-warning pb-2 mb-3"><i class="fas fa-hand-holding text-warning"></i> Sedang Dipinjam Warga</h6><div id="dash-pinjam-list"></div></div></div>
+        <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;"><h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6><div id="dash-kembali-list"></div></div></div>
     </div>
 
+    <!-- TABEL INVENTARIS -->
     <div class="table-container" id="section-inventaris">
         <h5 class="fw-bold mb-3"><i class="fas fa-list text-primary"></i> Data Master Inventaris</h5>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-dark text-center">
-                    <tr><th class="text-start">Nama Barang</th><th>Tersedia</th><th>Dipinjam</th></tr>
+                    <tr><th class="text-start">Nama Barang</th><th>Tersedia</th><th>Dipinjam</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="table-barang"></tbody>
             </table>
         </div>
     </div>
 
+    <!-- TABEL TRANSAKSI -->
     <div class="table-container" id="section-transaksi">
         <h5 class="fw-bold mb-3"><i class="fas fa-history text-secondary"></i> Riwayat Transaksi Keseluruhan</h5>
         <div class="table-responsive">
             <table class="table table-hover align-middle text-nowrap" style="font-size: 0.9rem;">
                 <thead class="table-light">
-                    <tr><th>Tanggal</th><th>Jenis</th><th>Status</th><th>Barang</th><th>Qty</th><th>Warga</th><th>Petugas</th></tr>
+                    <tr><th>Tanggal</th><th>Jenis</th><th>Status</th><th>Barang</th><th>Qty</th><th>Warga</th><th>Petugas</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="table-transaksi"></tbody>
             </table>
         </div>
     </div>
 
+    <!-- TABEL DATA WARGA -->
     <div class="table-container" id="section-warga">
         <h5 class="fw-bold mb-3"><i class="fas fa-users text-info"></i> Master Data Warga</h5>
         <div class="table-responsive">
             <table class="table table-hover align-middle text-nowrap" style="font-size: 0.9rem;">
                 <thead class="table-light">
-                    <tr><th>No</th><th>Nama Warga</th><th>Blok / RT / Keterangan</th></tr>
+                    <tr><th>Nama Warga</th><th>Keterangan</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="table-warga-master"></tbody>
             </table>
@@ -136,134 +89,93 @@
 
     <div class="text-center mt-5 mb-5 pb-4">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted">Versi Update Terkini: v1.8 (Fixed Input Bug)</small>
+        <small class="text-muted">Versi Update Terkini: v1.9 (Fitur Edit & Hapus)</small>
     </div>
 </div>
 
-<!-- Bottom Navigation -->
+<!-- Navigasi Bawah -->
 <nav class="bottom-navbar">
-    <a href="#" class="nav-item-bottom" data-bs-toggle="modal" data-bs-target="#modalBarang"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
-    <a href="#" class="nav-item-bottom" data-bs-toggle="modal" data-bs-target="#modalTransaksi"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
+    <a href="#" class="nav-item-bottom" onclick="resetModalBarang()"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
+    <a href="#" class="nav-item-bottom" onclick="resetModalTransaksi()"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
     <a href="#section-inventaris" class="nav-item-bottom" onclick="scrollToElement('section-inventaris')"><i class="fas fa-list-alt text-secondary"></i><span>Inventaris</span></a>
-    <a href="#" class="nav-item-bottom" data-bs-toggle="modal" data-bs-target="#modalWarga"><i class="fas fa-users text-info"></i><span>Warga</span></a>
+    <a href="#" class="nav-item-bottom" onclick="resetModalWarga()"><i class="fas fa-users text-info"></i><span>Warga</span></a>
     <a href="#" class="nav-item-bottom" onclick="previewWA()"><i class="fab fa-whatsapp text-success"></i><span>Share</span></a>
 </nav>
 
-<!-- Modal Preview WA -->
-<div class="modal fade" id="modalPreviewWA" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title fw-bold"><i class="fab fa-whatsapp"></i> Preview Laporan WA</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p class="text-muted small mb-2">Periksa teks di bawah ini. Anda bisa mengubahnya sebelum dikirim.</p>
-        <textarea id="textPreviewWA" class="form-control mb-3 border-success" rows="12" style="font-family: monospace; font-size: 0.85rem;"></textarea>
-        <button type="button" class="btn btn-success w-100 fw-bold py-2 shadow-sm" onclick="kirimWA()">
-            <i class="fab fa-whatsapp"></i> Lanjut Kirim ke WA
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Tambah Barang -->
+<!-- Modal Tambah/Edit Barang -->
 <div class="modal fade" id="modalBarang" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold">Tambah Master Barang</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold" id="titleModalBarang">Master Barang</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
       <div class="modal-body">
         <form id="formBarang">
+            <input type="hidden" id="inpBarangIdLama">
             <div class="mb-3"><label class="form-label fw-bold">Nama Barang</label><input type="text" class="form-control" id="inpBarangNama" required></div>
             <div class="mb-4"><label class="form-label fw-bold">Stok Awal</label><input type="number" class="form-control" id="inpBarangStok" value="0" required></div>
-            <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Simpan Master Barang</button>
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Simpan Data Barang</button>
         </form>
       </div>
-    </div>
-  </div>
+  </div></div>
 </div>
 
-<!-- Modal Transaksi -->
+<!-- Modal Tambah/Edit Transaksi -->
 <div class="modal fade" id="modalTransaksi" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-dark text-white"><h5 class="modal-title fw-bold">Catat Transaksi</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+      <div class="modal-header bg-dark text-white"><h5 class="modal-title fw-bold" id="titleModalTransaksi">Catat Transaksi</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
       <div class="modal-body">
         <form id="formTransaksi">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Kategori Transaksi</label>
-                <select class="form-select border-dark" id="inpTransJenis" required>
-                    <option value="Barang Di pinjam" selected>Barang Di pinjam</option>
-                    <option value="Barang kembali">Barang kembali</option>
-                    <option value="Barang rusak">Barang rusak</option>
-                    <option value="Barang Sumbangan">Barang Sumbangan</option>
-                </select>
-            </div>
+            <input type="hidden" id="inpTransId">
+            <div class="mb-3"><label class="form-label fw-bold">Kategori Transaksi</label><select class="form-select border-dark" id="inpTransJenis" required><option value="Barang Di pinjam" selected>Barang Di pinjam</option><option value="Barang kembali">Barang kembali</option><option value="Barang rusak">Barang rusak</option><option value="Barang Sumbangan">Barang Sumbangan</option></select></div>
             <div class="mb-3"><label class="form-label fw-bold">Pilih Barang</label><select class="form-select" id="inpTransBarang" required></select></div>
             <div class="mb-3"><label class="form-label fw-bold">Jumlah (Qty)</label><input type="number" class="form-control" id="inpTransJumlah" min="1" value="1" required></div>
-            
-            <div class="mb-3">
-                <label class="form-label fw-bold text-primary">Pilih Data Warga</label>
-                <select class="form-select border-primary" id="inpTransWarga" required>
-                     <option value="">-- Pilih Warga --</option>
-                </select>
-            </div>
-            
-            <div class="mb-4">
-                <label class="form-label fw-bold">Nama Petugas Pengelola</label>
-                <input type="text" class="form-control" id="inpTransPetugas" placeholder="Ketik nama admin..." required>
-            </div>
+            <div class="mb-3"><label class="form-label fw-bold text-primary">Pilih Data Warga</label><select class="form-select border-primary" id="inpTransWarga" required><option value="">-- Pilih Warga --</option></select></div>
+            <div class="mb-4"><label class="form-label fw-bold">Nama Petugas Pengelola</label><input type="text" class="form-control" id="inpTransPetugas" placeholder="Ketik nama admin..." required></div>
             <button type="submit" class="btn btn-dark w-100 fw-bold py-2">Simpan Transaksi</button>
         </form>
       </div>
-    </div>
-  </div>
+  </div></div>
 </div>
 
-<!-- Modal Data Warga -->
+<!-- Modal Tambah/Edit Warga -->
 <div class="modal fade" id="modalWarga" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-info text-white">
-        <h5 class="modal-title fw-bold"><i class="fas fa-user-plus"></i> Tambah Data Warga</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+      <div class="modal-header bg-info text-white"><h5 class="modal-title fw-bold" id="titleModalWarga">Data Warga</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
       <div class="modal-body">
         <form id="formWarga">
-            <div class="mb-3"><label class="form-label fw-bold">Nama Lengkap Warga</label><input type="text" class="form-control" id="inpWargaNama" placeholder="Contoh: Budi Santoso" required></div>
-            <div class="mb-4"><label class="form-label fw-bold">Blok / RT / Keterangan</label><input type="text" class="form-control" id="inpWargaKet" placeholder="Contoh: Blok A / RT 01" required></div>
+            <input type="hidden" id="inpWargaId">
+            <div class="mb-3"><label class="form-label fw-bold">Nama Lengkap Warga</label><input type="text" class="form-control" id="inpWargaNama" required></div>
+            <div class="mb-4"><label class="form-label fw-bold">Blok / RT / Keterangan</label><input type="text" class="form-control" id="inpWargaKet" required></div>
             <button type="submit" class="btn btn-info text-white w-100 fw-bold py-2">Simpan Data Warga</button>
         </form>
       </div>
-    </div>
-  </div>
+  </div></div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Modal Preview WA -->
+<div class="modal fade" id="modalPreviewWA" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+      <div class="modal-header bg-success text-white"><h5 class="modal-title fw-bold"><i class="fab fa-whatsapp"></i> Preview Laporan WA</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body"><textarea id="textPreviewWA" class="form-control mb-3 border-success" rows="12" style="font-family: monospace; font-size: 0.85rem;"></textarea><button type="button" class="btn btn-success w-100 fw-bold py-2 shadow-sm" onclick="kirimWA()"><i class="fab fa-whatsapp"></i> Lanjut Kirim ke WA</button></div>
+  </div></div>
+</div>
 
-<!-- Logika Aplikasi -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // ==========================================
-    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI (GUNAKAN URL YANG SAMA DENGAN v1.5)
+    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxYhlZjTVfkYnWl5nIM_aJeqlxeqywO_-2ZY9e_Dho9BaVEss1OOXEUfJAYew2u8xDE2w/exec";
     // ==========================================
 
     let appData = null;
-    
-    // Perbaikan Bug v1.6: Inisialisasi Modal ditunda sampai script dipanggil, tidak saat DOMContentLoaded.
-    function getWaModal() {
-        return bootstrap.Modal.getOrCreateInstance(document.getElementById('modalPreviewWA'));
-    }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        loadData();
-    });
+    document.addEventListener("DOMContentLoaded", function() { loadData(); });
 
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
     function scrollToElement(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+    // Bantuan untuk memanggil modal Bootstrap dengan aman
+    function openModal(id) { bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show(); }
+    function closeModal(id) { bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide(); }
 
     async function loadData() {
         if(!GAS_URL || GAS_URL === "URL_GAS_ANDA_DISINI") return alert("Harap isi GAS_URL!");
@@ -271,20 +183,9 @@
         try {
             const response = await fetch(GAS_URL + "?action=get_all");
             const result = await response.json();
-            if(result.status === "success") { 
-                appData = result; 
-                renderDashboard(); 
-                renderBarang(); 
-                renderTransaksi(); 
-                renderWarga(); 
-            } else {
-                alert("Error dari Server: " + result.message);
-                console.error("Server Error:", result);
-            }
-        } catch(e) { 
-            alert("Gagal memuat database. Pastikan URL GAS benar dan izinkan akses (Anyone)."); 
-            console.error("Fetch Error:", e);
-        }
+            if(result.status === "success") { appData = result; renderDashboard(); renderBarang(); renderTransaksi(); renderWarga(); } 
+            else { alert("Error dari Server: " + result.message); }
+        } catch(e) { alert("Gagal memuat database. Pastikan URL GAS benar."); }
         hideLoader();
     }
 
@@ -297,52 +198,88 @@
                 body: new URLSearchParams({ data: JSON.stringify(payload) })
             });
             const result = await response.json();
-            if(result.status === "success") {
-                await loadData(); // Refresh data jika sukses
-            }
-            else {
-                alert("Gagal menyimpan data: " + result.message);
-                console.error("Server Insert Error:", result);
-            }
-        } catch (e) { 
-            alert("Gagal mengirim data. Terjadi kesalahan jaringan atau CORS."); 
-            console.error("Post Error:", e);
-        }
+            if(result.status === "success") { await loadData(); }
+            else { alert("Gagal menyimpan data: " + result.message); }
+        } catch (e) { alert("Gagal mengirim data. Terjadi kesalahan jaringan."); }
         hideLoader();
     }
 
+    function hapusData(sheet, id) {
+        if(confirm(`Anda yakin ingin menghapus data ini dari ${sheet}?`)) {
+            sendPostRequest({ action: 'hapus_data', sheet: sheet, id: id });
+        }
+    }
+
+    // --- FUNGSI RESET & BUKA MODAL ---
+    function resetModalBarang() {
+        document.getElementById('formBarang').reset();
+        document.getElementById('inpBarangIdLama').value = "";
+        document.getElementById('titleModalBarang').innerText = "Tambah Master Barang";
+        openModal('modalBarang');
+    }
+    function editBarang(namaLama, stokLama) {
+        document.getElementById('inpBarangIdLama').value = namaLama;
+        document.getElementById('inpBarangNama').value = namaLama;
+        document.getElementById('inpBarangStok').value = stokLama;
+        document.getElementById('titleModalBarang').innerText = "Edit Master Barang";
+        openModal('modalBarang');
+    }
+
+    function resetModalWarga() {
+        document.getElementById('formWarga').reset();
+        document.getElementById('inpWargaId').value = "";
+        document.getElementById('titleModalWarga').innerText = "Tambah Data Warga";
+        openModal('modalWarga');
+    }
+    function editWarga(idWarga) {
+        const w = appData.warga.find(x => x.id == idWarga);
+        if(w) {
+            document.getElementById('inpWargaId').value = w.id;
+            document.getElementById('inpWargaNama').value = w.nama;
+            document.getElementById('inpWargaKet').value = w.keterangan;
+            document.getElementById('titleModalWarga').innerText = "Edit Data Warga";
+            openModal('modalWarga');
+        }
+    }
+
+    function resetModalTransaksi() {
+        document.getElementById('formTransaksi').reset();
+        document.getElementById('inpTransId').value = "";
+        document.getElementById('titleModalTransaksi').innerText = "Catat Transaksi Baru";
+        openModal('modalTransaksi');
+    }
+    function editTransaksi(idTrans) {
+        const t = appData.transaksi.find(x => x.id == idTrans);
+        if(t) {
+            document.getElementById('inpTransId').value = t.id;
+            document.getElementById('inpTransJenis').value = t.jenis;
+            document.getElementById('inpTransBarang').value = t.barang;
+            document.getElementById('inpTransJumlah').value = t.jumlah;
+            document.getElementById('inpTransWarga').value = t.warga;
+            document.getElementById('inpTransPetugas').value = t.petugas;
+            document.getElementById('titleModalTransaksi').innerText = "Edit Transaksi";
+            openModal('modalTransaksi');
+        }
+    }
+
+    // --- RENDER TAMPILAN ---
     function renderDashboard() {
         document.getElementById('dash-macam').innerText = appData.dashboard.macam_barang;
         document.getElementById('dash-stok').innerText = appData.dashboard.total_stok;
         document.getElementById('dash-pinjam').innerText = appData.dashboard.total_dipinjam;
-
         const cardNotif = document.getElementById('card-pinjam-notif');
-        if (appData.dashboard.total_dipinjam > 0) cardNotif.classList.add('pulse-warning');
-        else cardNotif.classList.remove('pulse-warning');
+        if (appData.dashboard.total_dipinjam > 0) cardNotif.classList.add('pulse-warning'); else cardNotif.classList.remove('pulse-warning');
 
         const listPinjam = document.getElementById('dash-pinjam-list'); listPinjam.innerHTML = "";
         const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
-        if(dataPinjam.length === 0) {
-            listPinjam.innerHTML = `<small class="text-muted">Tidak ada warga meminjam barang.</small>`;
-        } else {
-            dataPinjam.forEach(t => {
-                listPinjam.innerHTML += `
-                <div class="list-warga-item border-left-warning">
-                    <div>
-                        <strong class="text-dark fs-5">${t.warga}</strong><br>
-                        <small class="text-muted">Pinjam: <b>${t.barang}</b> (Qty: ${t.jumlah})</small><br>
-                        <small class="text-secondary" style="font-size: 0.75rem;"><i class="fas fa-user-check"></i> Petugas: ${t.petugas}</small>
-                    </div>
-                    <button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="kembalikanBarang('${t.id}')">
-                        <i class="fas fa-check"></i> Kembali
-                    </button>
-                </div>`;
-            });
-        }
+        if(dataPinjam.length === 0) listPinjam.innerHTML = `<small class="text-muted">Tidak ada warga meminjam barang.</small>`;
+        else dataPinjam.forEach(t => {
+            listPinjam.innerHTML += `<div class="list-warga-item border-left-warning"><div><strong class="text-dark fs-5">${t.warga}</strong><br><small class="text-muted">Pinjam: <b>${t.barang}</b> (Qty: ${t.jumlah})</small><br><small class="text-secondary" style="font-size: 0.75rem;"><i class="fas fa-user-check"></i> Petugas: ${t.petugas}</small></div><button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="kembalikanBarang('${t.id}')"><i class="fas fa-check"></i> Kembali</button></div>`;
+        });
 
         const listKembali = document.getElementById('dash-kembali-list'); listKembali.innerHTML = "";
         const dataKembali = appData.transaksi.filter(t => t.status === 'Dikembalikan');
-        if(dataKembali.length === 0) listKembali.innerHTML = `<small class="text-muted">Belum ada riwayat pengembalian terbaru.</small>`;
+        if(dataKembali.length === 0) listKembali.innerHTML = `<small class="text-muted">Belum ada riwayat pengembalian.</small>`;
         else dataKembali.slice(0, 5).forEach(t => {
             listKembali.innerHTML += `<div class="list-warga-item border-left-success"><div><strong class="text-dark fs-5">${t.warga}</strong><br><small class="text-muted">Kembali: <b>${t.barang}</b> (Qty: ${t.jumlah})</small></div><div class="text-end" style="font-size:0.75rem;"><span class="badge bg-success mb-1">Selesai</span><br><span class="text-muted">Petugas: ${t.petugas}</span></div></div>`;
         });
@@ -352,7 +289,8 @@
         const tbody = document.getElementById('table-barang'); const selectBarang = document.getElementById('inpTransBarang');
         tbody.innerHTML = ""; selectBarang.innerHTML = "<option value=''>-- Pilih Barang --</option>";
         appData.inventaris.forEach(b => {
-            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td></tr>`;
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${b.nama}', ${b.stok})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${b.nama}')"><i class="fas fa-trash"></i></button>`;
+            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td><td>${aksiBtn}</td></tr>`;
             selectBarang.innerHTML += `<option value="${b.nama}">${b.nama} (Sisa Stok: ${b.stok})</option>`;
         });
     }
@@ -372,103 +310,80 @@
             else if(t.status === 'Rusak') statusHtml = `<span class="badge bg-danger">Rusak</span>`;
             else if(t.status === 'Sumbangan') statusHtml = `<span class="badge bg-info text-dark">Sumbangan</span>`;
 
-            tbody.innerHTML += `<tr><td><small>${t.tanggal}</small></td><td><span class="badge bg-${badgeColor}">${t.jenis}</span></td><td>${statusHtml}</td><td class="fw-bold">${t.barang}</td><td>${t.jumlah}</td><td class="fw-bold text-primary">${t.warga}</td><td>${t.petugas}</td></tr>`;
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editTransaksi('${t.id}')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Transaksi', '${t.id}')"><i class="fas fa-trash"></i></button>`;
+
+            tbody.innerHTML += `<tr><td><small>${t.tanggal}</small></td><td><span class="badge bg-${badgeColor}">${t.jenis}</span></td><td>${statusHtml}</td><td class="fw-bold">${t.barang}</td><td>${t.jumlah}</td><td class="fw-bold text-primary">${t.warga}</td><td>${t.petugas}</td><td>${aksiBtn}</td></tr>`;
         });
     }
 
     function renderWarga() {
-        const selectWarga = document.getElementById('inpTransWarga');
-        const tableWarga = document.getElementById('table-warga-master');
-        
-        selectWarga.innerHTML = "<option value=''>-- Pilih Warga --</option>";
-        tableWarga.innerHTML = "";
-
-        if(!appData.warga || appData.warga.length === 0) {
-            tableWarga.innerHTML = "<tr><td colspan='3' class='text-center text-muted'>Data warga masih kosong. Silakan tambah data warga.</td></tr>";
-            return;
-        }
+        const selectWarga = document.getElementById('inpTransWarga'); const tableWarga = document.getElementById('table-warga-master');
+        selectWarga.innerHTML = "<option value=''>-- Pilih Warga --</option>"; tableWarga.innerHTML = "";
+        if(!appData.warga || appData.warga.length === 0) return;
 
         appData.warga.sort((a,b) => a.nama.localeCompare(b.nama));
-        appData.warga.forEach((w, index) => {
+        appData.warga.forEach(w => {
             selectWarga.innerHTML += `<option value="${w.nama}">${w.nama} (${w.keterangan})</option>`;
-            tableWarga.innerHTML += `<tr><td>${index + 1}</td><td class="fw-bold text-primary"><i class="fas fa-user-circle me-1"></i> ${w.nama}</td><td>${w.keterangan}</td></tr>`;
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editWarga('${w.id}')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Warga', '${w.id}')"><i class="fas fa-trash"></i></button>`;
+            tableWarga.innerHTML += `<tr><td class="fw-bold text-primary"><i class="fas fa-user-circle me-1"></i> ${w.nama}</td><td>${w.keterangan}</td><td>${aksiBtn}</td></tr>`;
         });
     }
 
-    // LISTENER UNTUK FORM SUBMIT
+    // --- LISTENER FORM SUBMIT ---
     document.getElementById('formBarang').addEventListener('submit', function(e) {
         e.preventDefault();
-        sendPostRequest({ action: 'tambah_barang', nama: document.getElementById('inpBarangNama').value, stok_awal: document.getElementById('inpBarangStok').value });
-        bootstrap.Modal.getInstance(document.getElementById('modalBarang')).hide(); this.reset();
+        let idLama = document.getElementById('inpBarangIdLama').value;
+        let payload = { action: idLama ? 'edit_barang' : 'tambah_barang', nama: document.getElementById('inpBarangNama').value, stok_awal: document.getElementById('inpBarangStok').value };
+        if(idLama) payload.id_lama = idLama;
+        sendPostRequest(payload); closeModal('modalBarang'); this.reset();
     });
 
     document.getElementById('formWarga').addEventListener('submit', function(e) {
         e.preventDefault();
-        sendPostRequest({ action: 'tambah_warga', nama_warga: document.getElementById('inpWargaNama').value, keterangan_warga: document.getElementById('inpWargaKet').value });
-        bootstrap.Modal.getInstance(document.getElementById('modalWarga')).hide(); this.reset();
+        let idWarga = document.getElementById('inpWargaId').value;
+        let payload = { action: idWarga ? 'edit_warga' : 'tambah_warga', nama_warga: document.getElementById('inpWargaNama').value, keterangan_warga: document.getElementById('inpWargaKet').value };
+        if(idWarga) payload.id = idWarga;
+        sendPostRequest(payload); closeModal('modalWarga'); this.reset();
     });
 
     document.getElementById('formTransaksi').addEventListener('submit', function(e) {
         e.preventDefault();
-        sendPostRequest({
-            action: 'tambah_transaksi',
-            jenis: document.getElementById('inpTransJenis').value,
-            barang: document.getElementById('inpTransBarang').value,
-            jumlah: document.getElementById('inpTransJumlah').value,
-            warga: document.getElementById('inpTransWarga').value,
-            petugas: document.getElementById('inpTransPetugas').value
-        });
-        bootstrap.Modal.getInstance(document.getElementById('modalTransaksi')).hide(); this.reset(); 
+        let idTrans = document.getElementById('inpTransId').value;
+        let payload = {
+            action: idTrans ? 'edit_transaksi' : 'tambah_transaksi',
+            jenis: document.getElementById('inpTransJenis').value, barang: document.getElementById('inpTransBarang').value,
+            jumlah: document.getElementById('inpTransJumlah').value, warga: document.getElementById('inpTransWarga').value, petugas: document.getElementById('inpTransPetugas').value
+        };
+        if(idTrans) payload.id = idTrans;
+        sendPostRequest(payload); closeModal('modalTransaksi'); this.reset(); 
     });
 
     function kembalikanBarang(idTrans) {
-        if(confirm("Konfirmasi: Apakah barang ini sudah diterima kembali secara utuh?")) {
-            sendPostRequest({ action: 'kembalikan_barang', id: idTrans });
-        }
+        if(confirm("Konfirmasi: Apakah barang ini sudah diterima kembali secara utuh?")) { sendPostRequest({ action: 'kembalikan_barang', id: idTrans }); }
     }
 
-    // Fungsi Share WA dengan Preview
     function previewWA() {
         if(!appData) return alert("Data belum termuat!");
-        let d = new Date();
-        let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
-        
-        let text = "==========================\n";
-        text += " 📋 NOTA INVENTARIS RT \n";
-        text += "==========================\n";
-        text += "Tanggal : " + dateStr + "\n";
-        text += "Admin   : Sistem RT\n";
+        let d = new Date(); let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
+        let text = "==========================\n 📋 NOTA INVENTARIS RT \n==========================\nTanggal : " + dateStr + "\nAdmin   : Sistem RT\n--------------------------\n📦 STATUS STOK BARANG :\n";
+        appData.inventaris.forEach(b => { text += `> ${b.nama}\n   Tersedia : ${b.stok}\n   Dipinjam : ${b.dipinjam}\n`; });
         text += "--------------------------\n";
-        text += "📦 STATUS STOK BARANG :\n";
-        
-        appData.inventaris.forEach(b => { 
-            text += `> ${b.nama}\n   Tersedia : ${b.stok}\n   Dipinjam : ${b.dipinjam}\n`;
-        });
-        
-        text += "--------------------------\n";
-        
         const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
         if (dataPinjam.length > 0) {
             text += "⚠️ SEDANG DIPINJAM :\n";
             dataPinjam.forEach(p => { text += `- ${p.warga} (${p.barang}: ${p.jumlah})\n`; });
             text += "--------------------------\n";
         }
-        
         text += "Terima kasih.\n==========================";
-        
-        // Memasukkan teks hasil racikan ke dalam textarea Preview
         document.getElementById('textPreviewWA').value = text;
-        
-        // Memunculkan Modal Preview dengan metode yang aman untuk Bootstrap
-        getWaModal().show();
+        openModal('modalPreviewWA');
     }
 
     function kirimWA() {
         let finalMessage = document.getElementById('textPreviewWA').value;
         if(finalMessage.trim() === "") return alert("Pesan kosong!");
-        
         window.open(`https://wa.me/?text=${encodeURIComponent(finalMessage)}`, '_blank');
-        getWaModal().hide();
+        closeModal('modalPreviewWA');
     }
 </script>
 </body>
