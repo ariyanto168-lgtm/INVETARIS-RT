@@ -17,18 +17,11 @@
         .nav-item-bottom i { font-size: 1.4rem; margin-bottom: 4px; }
         .nav-item-bottom:hover, .nav-item-bottom:active { color: #0d6efd; }
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; text-align: center; padding-top: 30vh; }
-        
         .list-warga-item { background-color: #ffffff; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .border-left-warning { border-left: 5px solid #ffc107; }
         .border-left-success { border-left: 5px solid #198754; }
-        
-        /* ANIMASI DENYUT MERAH BARU */
         .pulse-danger { animation: pulse-red 1.5s infinite; }
-        @keyframes pulse-red { 
-            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 
-            70% { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } 
-        }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
     </style>
 </head>
 <body>
@@ -39,56 +32,36 @@
 <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
     <div class="container d-flex justify-content-between">
         <span class="navbar-brand mb-0 h1 fw-bold"><i class="fas fa-boxes text-warning"></i> INVENTARIS RT</span>
-        <span class="badge bg-secondary">v1.10</span>
+        <span class="badge bg-secondary">v1.11</span>
     </div>
 </nav>
 
 <div class="container">
-    
-    <!-- GRID 4 KARTU DASHBOARD (2 BARIS X 2 KOLOM) -->
     <div class="row mb-3">
-        <div class="col-6 mb-3">
-            <div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')">
-                <h6 style="font-size:0.75rem; margin-bottom:2px;">Macam Barang</h6>
-                <h3 class="mb-0 fw-bold" id="dash-macam">0</h3>
-            </div>
-        </div>
-        <div class="col-6 mb-3">
-            <div class="card card-stat bg-info text-dark h-100 text-center p-2" onclick="scrollToElement('section-inventaris')">
-                <h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Total Jml Awal</h6>
-                <h3 class="mb-0 fw-bold" id="dash-total">0</h3>
-            </div>
-        </div>
-        <div class="col-6 mb-2">
-            <div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')">
-                <h6 style="font-size:0.75rem; margin-bottom:2px;">Stok Tersedia</h6>
-                <h3 class="mb-0 fw-bold" id="dash-stok">0</h3>
-            </div>
-        </div>
-        <div class="col-6 mb-2">
-            <!-- Kartu ini akan berdenyut warna MERAH (pulse-danger) jika ada yang dipinjam -->
-            <div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="scrollToElement('section-transaksi')">
-                <h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Sedang Dipinjam</h6>
-                <h3 class="mb-0 fw-bold" id="dash-pinjam">0</h3>
-            </div>
-        </div>
+        <div class="col-6 mb-3"><div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Macam Barang</h6><h3 class="mb-0 fw-bold" id="dash-macam">0</h3></div></div>
+        <div class="col-6 mb-3"><div class="card card-stat bg-info text-dark h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Total Jml Awal</h6><h3 class="mb-0 fw-bold" id="dash-total">0</h3></div></div>
+        <div class="col-6 mb-2"><div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Stok Tersedia</h6><h3 class="mb-0 fw-bold" id="dash-stok">0</h3></div></div>
+        <div class="col-6 mb-2"><div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="scrollToElement('section-transaksi')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Sedang Dipinjam</h6><h3 class="mb-0 fw-bold" id="dash-pinjam">0</h3></div></div>
     </div>
 
-    <!-- LIST CEPAT -->
     <div class="row mb-4">
-        <!-- Sedang Dipinjam -->
         <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #fff8e1; border: 1px solid #ffecb3;"><h6 class="fw-bold text-dark border-bottom border-warning pb-2 mb-3"><i class="fas fa-hand-holding text-warning"></i> Sedang Dipinjam Warga</h6><div id="dash-pinjam-list"></div></div></div>
-        <!-- Telah Dikembalikan -->
         <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;"><h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6><div id="dash-kembali-list"></div></div></div>
     </div>
 
-    <!-- TABEL INVENTARIS -->
+    <!-- TABEL INVENTARIS DIPERBARUI (TAMBAH KOLOM JML AWAL) -->
     <div class="table-container" id="section-inventaris">
         <h5 class="fw-bold mb-3"><i class="fas fa-list text-primary"></i> Data Master Inventaris</h5>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-dark text-center">
-                    <tr><th class="text-start">Nama Barang</th><th>Tersedia</th><th>Dipinjam</th><th>Aksi</th></tr>
+                    <tr>
+                        <th class="text-start">Nama Barang</th>
+                        <th>Jml Awal</th>
+                        <th>Tersedia</th>
+                        <th>Dipinjam</th>
+                        <th>Aksi</th>
+                    </tr>
                 </thead>
                 <tbody id="table-barang"></tbody>
             </table>
@@ -123,7 +96,7 @@
 
     <div class="text-center mt-5 mb-5 pb-4">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted">Versi Update Terkini: v1.10 (Grid & Denyut Merah)</small>
+        <small class="text-muted">Versi Update Terkini: v1.11 (Tabel Master + Jml Awal)</small>
     </div>
 </div>
 
@@ -250,10 +223,12 @@
         document.getElementById('titleModalBarang').innerText = "Tambah Master Barang";
         openModal('modalBarang');
     }
-    function editBarang(namaLama, stokLama) {
+    // Perbaikan fungsi Edit Barang: Parameter stokLama sekarang mereferensikan stok awal (sebelum dipinjam dll) 
+    // namun di UI akan kita tangkap dari total_keseluruhan
+    function editBarang(namaLama, totalAwal) {
         document.getElementById('inpBarangIdLama').value = namaLama;
         document.getElementById('inpBarangNama').value = namaLama;
-        document.getElementById('inpBarangStok').value = stokLama;
+        document.getElementById('inpBarangStok').value = totalAwal;
         document.getElementById('titleModalBarang').innerText = "Edit Master Barang";
         openModal('modalBarang');
     }
@@ -297,22 +272,15 @@
 
     // --- RENDER TAMPILAN ---
     function renderDashboard() {
-        // Render 4 Kartu
         document.getElementById('dash-macam').innerText = appData.dashboard.macam_barang;
         document.getElementById('dash-stok').innerText = appData.dashboard.total_stok;
         document.getElementById('dash-pinjam').innerText = appData.dashboard.total_dipinjam;
         
-        // Total Barang = Stok Tersedia + Stok yang sedang dipinjam
         let totalKeseluruhan = appData.dashboard.total_stok + appData.dashboard.total_dipinjam;
         document.getElementById('dash-total').innerText = totalKeseluruhan;
 
-        // ANIMASI DENYUT MERAH jika ada barang dipinjam
         const cardNotif = document.getElementById('card-pinjam-notif');
-        if (appData.dashboard.total_dipinjam > 0) {
-            cardNotif.classList.add('pulse-danger');
-        } else {
-            cardNotif.classList.remove('pulse-danger');
-        }
+        if (appData.dashboard.total_dipinjam > 0) cardNotif.classList.add('pulse-danger'); else cardNotif.classList.remove('pulse-danger');
 
         const listPinjam = document.getElementById('dash-pinjam-list'); listPinjam.innerHTML = "";
         const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
@@ -330,12 +298,26 @@
     }
 
     function renderBarang() {
-        const tbody = document.getElementById('table-barang'); const selectBarang = document.getElementById('inpTransBarang');
+        const tbody = document.getElementById('table-barang'); 
+        const selectBarang = document.getElementById('inpTransBarang');
         tbody.innerHTML = ""; selectBarang.innerHTML = "<option value=''>-- Pilih Barang --</option>";
+        
         appData.inventaris.forEach(b => {
-            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${b.nama}', ${b.stok})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${b.nama}')"><i class="fas fa-trash"></i></button>`;
-            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td><td>${aksiBtn}</td></tr>`;
-            selectBarang.innerHTML += `<option value="${b.nama}">${b.nama} (Sisa Stok: ${b.stok})</option>`;
+            // Kalkulasi Jml Awal untuk masing-masing barang (Tersedia + Dipinjam)
+            let totalAwal = b.stok + b.dipinjam;
+            
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${b.nama}', ${totalAwal})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${b.nama}')"><i class="fas fa-trash"></i></button>`;
+            
+            // Kolom baru ditambahkan di sini
+            tbody.innerHTML += `
+            <tr>
+                <td class="fw-bold">${b.nama}</td>
+                <td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td>
+                <td class="text-center"><span class="badge bg-success">${b.stok}</span></td>
+                <td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td>
+                <td class="text-nowrap">${aksiBtn}</td>
+            </tr>`;
+            selectBarang.innerHTML += `<option value="${b.nama}">${b.nama} (Tersedia: ${b.stok})</option>`;
         });
     }
 
@@ -410,7 +392,12 @@
         if(!appData) return alert("Data belum termuat!");
         let d = new Date(); let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
         let text = "==========================\n 📋 NOTA INVENTARIS RT \n==========================\nTanggal : " + dateStr + "\nAdmin   : Sistem RT\n--------------------------\n📦 STATUS STOK BARANG :\n";
-        appData.inventaris.forEach(b => { text += `> ${b.nama}\n   Tersedia : ${b.stok}\n   Dipinjam : ${b.dipinjam}\n`; });
+        
+        appData.inventaris.forEach(b => { 
+            let totAwal = b.stok + b.dipinjam;
+            text += `> ${b.nama}\n   Jml Awal : ${totAwal}\n   Tersedia : ${b.stok}\n   Dipinjam : ${b.dipinjam}\n`; 
+        });
+        
         text += "--------------------------\n";
         const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
         if (dataPinjam.length > 0) {
