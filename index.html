@@ -13,16 +13,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #f4f6f9; padding-bottom: 90px; }
-        .card-stat { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;}
+        body { background-color: #f4f6f9; padding-bottom: 95px; }
+        .card-stat { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s; }
         .card-stat:active { transform: scale(0.95); }
-        .table-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;}
-        .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-around; padding: 12px 0 8px 0; z-index: 1030; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        .nav-item-bottom { text-align: center; color: #6c757d; text-decoration: none; font-size: 0.72rem; font-weight: 500; display: flex; flex-direction: column; align-items: center; width: 20%; transition: 0.3s; }
+        .table-container { background: white; padding: 18px; border-radius: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        /* Navigasi Bawah */
+        .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-around; padding: 10px 0 8px 0; z-index: 1030; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item-bottom { text-align: center; color: #6c757d; text-decoration: none; font-size: 0.72rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; width: 20%; transition: 0.2s; cursor: pointer; }
         .nav-item-bottom i { font-size: 1.35rem; margin-bottom: 4px; }
-        .nav-item-bottom:hover, .nav-item-bottom:active { color: #0d6efd; }
+        .nav-item-bottom.active-tab { color: #0d6efd; transform: translateY(-2px); }
+        .nav-item-bottom.active-tab i { color: #0d6efd !important; }
+
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 9998; text-align: center; padding-top: 30vh; }
-        .list-warga-item { background-color: #ffffff; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .list-warga-item { background-color: #ffffff; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .border-left-warning { border-left: 5px solid #ffc107; }
         .border-left-success { border-left: 5px solid #198754; }
         .pulse-danger { animation: pulse-red 1.5s infinite; }
@@ -31,11 +35,11 @@
         /* Style Banner Install PWA */
         #installBanner { display: none; background: linear-gradient(135deg, #198754, #157347); color: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
 
-        /* Style Lock Screen PIN */
+        /* Style Lock Screen PIN - Rapi & Presisi Tengah */
         #pinLockScreen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(160deg, #181c20 0%, #2b323b 100%);
+            background: linear-gradient(165deg, #14171a 0%, #242a32 100%);
             z-index: 10000;
             display: flex;
             flex-direction: column;
@@ -43,14 +47,22 @@
             align-items: center;
             color: #ffffff;
             padding: 20px;
+            text-align: center;
+        }
+        .pin-card-box {
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .pin-logo-wrap {
-            width: 88px; height: 88px;
+            width: 84px; height: 84px;
             background: #ffffff;
             border-radius: 22px;
             padding: 8px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
-            margin-bottom: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            margin: 0 auto 14px auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -60,33 +72,38 @@
         }
         .pin-dots {
             display: flex;
-            gap: 12px;
-            margin: 16px 0 22px 0;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            margin: 18px auto 12px auto;
         }
         .pin-dot {
-            width: 15px; height: 15px;
+            width: 14px; height: 14px;
             border-radius: 50%;
             border: 2px solid #ffc107;
             background: transparent;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
         .pin-dot.filled {
             background: #ffc107;
+            box-shadow: 0 0 8px rgba(255, 193, 7, 0.7);
             transform: scale(1.15);
         }
         .pin-keypad {
             display: grid;
-            grid-template-columns: repeat(3, 74px);
-            gap: 12px;
+            grid-template-columns: repeat(3, 76px);
+            gap: 14px;
             justify-content: center;
+            margin: 0 auto;
         }
         .pin-key {
-            width: 74px; height: 60px;
+            width: 76px; height: 60px;
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.07);
             color: #ffffff;
-            font-size: 1.4rem;
+            font-size: 1.45rem;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -113,69 +130,71 @@
 
 <!-- ==================== LAYAR KUNCI PIN AWAL MASUK ==================== -->
 <div id="pinLockScreen">
-    <div class="pin-logo-wrap">
-        <img src="inventarisrt.png" alt="Logo Inventaris RT">
-    </div>
-    <h5 class="fw-bold mb-1 tracking-wide">INVENTARIS GUDANG RT</h5>
-    <small class="text-white-50 mb-1" id="lockSubtitle">Masukkan 6 Digit PIN Admin</small>
-
-    <!-- View 1: Input Keypad PIN -->
-    <div id="viewPinInput" class="text-center">
-        <div class="pin-dots" id="pinDotsContainer">
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
+    <div class="pin-card-box">
+        <div class="pin-logo-wrap">
+            <img src="inventarisrt.png" alt="Logo Inventaris RT">
         </div>
-        <div id="pinErrorMsg" class="text-warning small fw-bold mb-2" style="min-height: 20px;"></div>
+        <h5 class="fw-bold mb-1" style="letter-spacing: 0.5px;">INVENTARIS GUDANG RT</h5>
+        <small class="text-white-50" id="lockSubtitle">Masukkan 6 Digit PIN Admin</small>
 
-        <div class="pin-keypad">
-            <button type="button" class="pin-key" onclick="pressPin('1')">1</button>
-            <button type="button" class="pin-key" onclick="pressPin('2')">2</button>
-            <button type="button" class="pin-key" onclick="pressPin('3')">3</button>
-            <button type="button" class="pin-key" onclick="pressPin('4')">4</button>
-            <button type="button" class="pin-key" onclick="pressPin('5')">5</button>
-            <button type="button" class="pin-key" onclick="pressPin('6')">6</button>
-            <button type="button" class="pin-key" onclick="pressPin('7')">7</button>
-            <button type="button" class="pin-key" onclick="pressPin('8')">8</button>
-            <button type="button" class="pin-key" onclick="pressPin('9')">9</button>
-            <button type="button" class="pin-key text-danger fs-6" onclick="clearPin()">Hapus</button>
-            <button type="button" class="pin-key" onclick="pressPin('0')">0</button>
-            <button type="button" class="pin-key text-warning" onclick="backspacePin()"><i class="fas fa-backspace"></i></button>
+        <!-- View 1: Input Keypad PIN -->
+        <div id="viewPinInput" class="w-100 d-flex flex-column align-items-center">
+            <div class="pin-dots" id="pinDotsContainer">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+            <div id="pinErrorMsg" class="text-warning small fw-bold mb-2" style="min-height: 20px;"></div>
+
+            <div class="pin-keypad">
+                <button type="button" class="pin-key" onclick="pressPin('1')">1</button>
+                <button type="button" class="pin-key" onclick="pressPin('2')">2</button>
+                <button type="button" class="pin-key" onclick="pressPin('3')">3</button>
+                <button type="button" class="pin-key" onclick="pressPin('4')">4</button>
+                <button type="button" class="pin-key" onclick="pressPin('5')">5</button>
+                <button type="button" class="pin-key" onclick="pressPin('6')">6</button>
+                <button type="button" class="pin-key" onclick="pressPin('7')">7</button>
+                <button type="button" class="pin-key" onclick="pressPin('8')">8</button>
+                <button type="button" class="pin-key" onclick="pressPin('9')">9</button>
+                <button type="button" class="pin-key text-danger fs-6" onclick="clearPin()">Hapus</button>
+                <button type="button" class="pin-key" onclick="pressPin('0')">0</button>
+                <button type="button" class="pin-key text-warning" onclick="backspacePin()"><i class="fas fa-backspace"></i></button>
+            </div>
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-link text-warning text-decoration-none btn-sm fw-bold" onclick="toggleForgotPin(true)">
+                    <i class="fas fa-key me-1"></i> Lupa PIN? Reset dengan Pertanyaan Keamanan
+                </button>
+            </div>
         </div>
 
-        <div class="mt-4">
-            <button type="button" class="btn btn-link text-warning text-decoration-none btn-sm fw-bold" onclick="toggleForgotPin(true)">
-                <i class="fas fa-key me-1"></i> Lupa PIN? Reset dengan Pertanyaan Keamanan
-            </button>
-        </div>
-    </div>
-
-    <!-- View 2: Lupa PIN / Verifikasi Pertanyaan Keamanan -->
-    <div id="viewForgotPin" class="w-100" style="max-width: 360px; display: none;">
-        <div class="card bg-dark border-secondary text-white p-3 rounded-4 shadow mt-3">
-            <h6 class="fw-bold text-warning mb-2"><i class="fas fa-shield-alt me-1"></i> Pemulihan PIN Admin</h6>
-            <div class="mb-2">
-                <small class="text-white-50 d-block">Pertanyaan Keamanan:</small>
-                <p class="fw-bold mb-2 text-info" id="displayRecoveryQuestion">-</p>
+        <!-- View 2: Lupa PIN / Verifikasi Pertanyaan Keamanan -->
+        <div id="viewForgotPin" class="w-100 text-start" style="display: none;">
+            <div class="card bg-dark border-secondary text-white p-3 rounded-4 shadow mt-3">
+                <h6 class="fw-bold text-warning mb-2"><i class="fas fa-shield-alt me-1"></i> Pemulihan PIN Admin</h6>
+                <div class="mb-2">
+                    <small class="text-white-50 d-block">Pertanyaan Keamanan:</small>
+                    <p class="fw-bold mb-2 text-info" id="displayRecoveryQuestion">-</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small">Jawaban Anda</label>
+                    <input type="text" class="form-control bg-secondary text-white border-0" id="inpRecoveryAnswer" placeholder="Ketik jawaban keamanan...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small">Buat PIN Baru (6 Digit Angka)</label>
+                    <input type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*" class="form-control bg-secondary text-white border-0 text-center fw-bold fs-5" id="inpRecoveryNewPin" placeholder="••••••">
+                </div>
+                <div id="recoveryErrorMsg" class="text-warning small fw-bold mb-2"></div>
+                <button type="button" class="btn btn-warning w-100 fw-bold mb-2" onclick="processRecoveryPin()">
+                    <i class="fas fa-check-circle me-1"></i> Simpan PIN Baru & Masuk
+                </button>
+                <button type="button" class="btn btn-outline-light btn-sm w-100" onclick="toggleForgotPin(false)">
+                    <i class="fas fa-arrow-left me-1"></i> Kembali ke Layar PIN
+                </button>
             </div>
-            <div class="mb-3">
-                <label class="form-label small">Jawaban Anda</label>
-                <input type="text" class="form-control bg-secondary text-white border-0" id="inpRecoveryAnswer" placeholder="Ketik jawaban keamanan...">
-            </div>
-            <div class="mb-3">
-                <label class="form-label small">Buat PIN Baru (6 Digit Angka)</label>
-                <input type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*" class="form-control bg-secondary text-white border-0 text-center fw-bold fs-5" id="inpRecoveryNewPin" placeholder="••••••">
-            </div>
-            <div id="recoveryErrorMsg" class="text-warning small fw-bold mb-2"></div>
-            <button type="button" class="btn btn-warning w-100 fw-bold mb-2" onclick="processRecoveryPin()">
-                <i class="fas fa-check-circle me-1"></i> Simpan PIN Baru & Masuk
-            </button>
-            <button type="button" class="btn btn-outline-light btn-sm w-100" onclick="toggleForgotPin(false)">
-                <i class="fas fa-arrow-left me-1"></i> Kembali ke Layar PIN
-            </button>
         </div>
     </div>
 </div>
@@ -193,19 +212,19 @@
 <!-- ==================== APLIKASI UTAMA ==================== -->
 <div id="loader"><div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3 text-primary fw-bold">Memproses...</h4></div>
 
-<nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
+<nav class="navbar navbar-dark bg-dark mb-3 shadow-sm sticky-top">
     <div class="container d-flex justify-content-between align-items-center">
-        <span class="navbar-brand mb-0 h1 fw-bold d-flex align-items-center">
+        <span class="navbar-brand mb-0 h1 fw-bold d-flex align-items-center" style="cursor:pointer;" onclick="switchTab('dashboard')" title="Kembali ke Dashboard">
             <img src="inventarisrt.png" alt="Logo" width="30" height="30" class="rounded me-2 bg-white p-1">
             INVENTARIS RT
         </span>
         <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-secondary">v1.16</span>
+            <button class="btn btn-sm btn-outline-info" onclick="switchTab('dashboard')" id="btnHomeTop" style="display:none;" title="Beranda Dashboard">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <span class="badge bg-secondary">v1.17</span>
             <button class="btn btn-sm btn-outline-warning" onclick="lockApp()" title="Kunci Aplikasi">
                 <i class="fas fa-lock"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-light" onclick="openSettingsModal()" title="Pengaturan PIN & Data">
-                <i class="fas fa-cog"></i>
             </button>
         </div>
     </div>
@@ -213,7 +232,7 @@
 
 <div class="container">
     
-    <!-- BANNER INSTAL APLIKASI (MUNCUL OTOMATIS JIKA DIDUKUNG HP) -->
+    <!-- BANNER INSTAL APLIKASI -->
     <div id="installBanner">
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
@@ -229,68 +248,114 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-6 mb-3"><div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Macam Barang</h6><h3 class="mb-0 fw-bold" id="dash-macam">0</h3></div></div>
-        <div class="col-6 mb-3"><div class="card card-stat bg-info text-dark h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Total Jml Awal</h6><h3 class="mb-0 fw-bold" id="dash-total">0</h3></div></div>
-        <div class="col-6 mb-2"><div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Stok Tersedia</h6><h3 class="mb-0 fw-bold" id="dash-stok">0</h3></div></div>
-        <div class="col-6 mb-2"><div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="scrollToElement('section-transaksi')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Sedang Dipinjam</h6><h3 class="mb-0 fw-bold" id="dash-pinjam">0</h3></div></div>
-    </div>
+    <!-- ==================== TAB 1: DASHBOARD UTAMA ==================== -->
+    <div id="tab-dashboard" class="app-tab-view">
+        <div class="row mb-3">
+            <div class="col-6 mb-3"><div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="switchTab('barang')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Macam Barang</h6><h3 class="mb-0 fw-bold" id="dash-macam">0</h3></div></div>
+            <div class="col-6 mb-3"><div class="card card-stat bg-info text-dark h-100 text-center p-2" onclick="switchTab('barang')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Total Jml Awal</h6><h3 class="mb-0 fw-bold" id="dash-total">0</h3></div></div>
+            <div class="col-6 mb-2"><div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="switchTab('barang')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Stok Tersedia</h6><h3 class="mb-0 fw-bold" id="dash-stok">0</h3></div></div>
+            <div class="col-6 mb-2"><div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="switchTab('transaksi')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Sedang Dipinjam</h6><h3 class="mb-0 fw-bold" id="dash-pinjam">0</h3></div></div>
+        </div>
 
-    <div class="row mb-4">
-        <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #fff8e1; border: 1px solid #ffecb3;"><h6 class="fw-bold text-dark border-bottom border-warning pb-2 mb-3"><i class="fas fa-hand-holding text-warning"></i> Sedang Dipinjam Warga</h6><div id="dash-pinjam-list"></div></div></div>
-        <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;"><h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6><div id="dash-kembali-list"></div></div></div>
-    </div>
-
-    <div class="table-container" id="section-inventaris">
-        <h5 class="fw-bold mb-3"><i class="fas fa-list text-primary"></i> Data Master Inventaris</h5>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark text-center">
-                    <tr><th class="text-start">Nama Barang</th><th>Jml Awal</th><th>Tersedia</th><th>Dipinjam</th><th>Aksi</th></tr>
-                </thead>
-                <tbody id="table-barang"></tbody>
-            </table>
+        <div class="row mb-2">
+            <div class="col-md-6 mb-3">
+                <div class="p-3 rounded-4 shadow-sm" style="background-color: #fff8e1; border: 1px solid #ffecb3;">
+                    <h6 class="fw-bold text-dark border-bottom border-warning pb-2 mb-3"><i class="fas fa-hand-holding text-warning"></i> Sedang Dipinjam Warga</h6>
+                    <div id="dash-pinjam-list"></div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="p-3 rounded-4 shadow-sm" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;">
+                    <h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6>
+                    <div id="dash-kembali-list"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="table-container" id="section-transaksi">
-        <h5 class="fw-bold mb-3"><i class="fas fa-history text-secondary"></i> Riwayat Transaksi Keseluruhan</h5>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle text-nowrap" style="font-size: 0.9rem;">
-                <thead class="table-light">
-                    <tr><th>Tanggal</th><th>Jenis</th><th>Status</th><th>Barang</th><th>Qty</th><th>Warga</th><th>Petugas</th><th>Aksi</th></tr>
-                </thead>
-                <tbody id="table-transaksi"></tbody>
-            </table>
+    <!-- ==================== TAB 2: BARANG & DATA MASTER INVENTARIS ==================== -->
+    <div id="tab-barang" class="app-tab-view" style="display: none;">
+        <div class="table-container" id="section-inventaris">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h5 class="fw-bold mb-0"><i class="fas fa-box-open text-primary me-1"></i> Data Master Inventaris</h5>
+                    <small class="text-muted">Kelola daftar barang & stok gudang RT</small>
+                </div>
+                <button class="btn btn-primary btn-sm fw-bold shadow-sm px-3 py-2" onclick="resetModalBarang()">
+                    <i class="fas fa-plus me-1"></i> Tambah Barang
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark text-center">
+                        <tr><th class="text-start">Nama Barang</th><th>Jml Awal</th><th>Tersedia</th><th>Dipinjam</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="table-barang"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="table-container" id="section-warga">
-        <h5 class="fw-bold mb-3"><i class="fas fa-users text-info"></i> Master Data Warga</h5>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle text-nowrap" style="font-size: 0.9rem;">
-                <thead class="table-light">
-                    <tr><th>Nama Warga</th><th>Keterangan</th><th>Aksi</th></tr>
-                </thead>
-                <tbody id="table-warga-master"></tbody>
-            </table>
+    <!-- ==================== TAB 3: TRANSAKSI & RIWAYAT TRANSAKSI ==================== -->
+    <div id="tab-transaksi" class="app-tab-view" style="display: none;">
+        <div class="table-container" id="section-transaksi">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h5 class="fw-bold mb-0"><i class="fas fa-exchange-alt text-danger me-1"></i> Riwayat Transaksi</h5>
+                    <small class="text-muted">Catat pinjam, kembali, rusak & sumbangan</small>
+                </div>
+                <button class="btn btn-dark btn-sm fw-bold shadow-sm px-3 py-2" onclick="resetModalTransaksi()">
+                    <i class="fas fa-plus me-1"></i> Catat Transaksi
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-nowrap" style="font-size: 0.9rem;">
+                    <thead class="table-light">
+                        <tr><th>Tanggal</th><th>Jenis</th><th>Status</th><th>Barang</th><th>Qty</th><th>Warga</th><th>Petugas</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="table-transaksi"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TAB 4: WARGA & MASTER DATA WARGA ==================== -->
+    <div id="tab-warga" class="app-tab-view" style="display: none;">
+        <div class="table-container" id="section-warga">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h5 class="fw-bold mb-0"><i class="fas fa-users text-info me-1"></i> Master Data Warga</h5>
+                    <small class="text-muted">Daftar warga peminjam inventaris RT</small>
+                </div>
+                <button class="btn btn-info text-white btn-sm fw-bold shadow-sm px-3 py-2" onclick="resetModalWarga()">
+                    <i class="fas fa-user-plus me-1"></i> Tambah Warga
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-nowrap" style="font-size: 0.9rem;">
+                    <thead class="table-light">
+                        <tr><th>Nama Warga</th><th>Keterangan</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="table-warga-master"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <!-- FOOTER BRANDING -->
-    <div class="text-center mt-5 mb-5 pb-4">
+    <div class="text-center mt-4 mb-4 pb-3">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted d-block">Versi Update Terkini: v1.16 (PIN Security & Recovery)</small>
+        <small class="text-muted d-block">Versi Update Terkini: v1.17</small>
     </div>
 </div>
 
 <!-- Navigasi Bawah -->
 <nav class="bottom-navbar">
-    <a href="#" class="nav-item-bottom" onclick="resetModalBarang()"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
-    <a href="#" class="nav-item-bottom" onclick="resetModalTransaksi()"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
-    <a href="#" class="nav-item-bottom" onclick="resetModalWarga()"><i class="fas fa-users text-info"></i><span>Warga</span></a>
-    <a href="#" class="nav-item-bottom" onclick="previewWA()"><i class="fab fa-whatsapp text-success"></i><span>Share</span></a>
-    <a href="#" class="nav-item-bottom" onclick="openSettingsModal()"><i class="fas fa-cog text-dark"></i><span>Pengaturan</span></a>
+    <a class="nav-item-bottom" id="nav-barang" onclick="switchTab('barang')"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
+    <a class="nav-item-bottom" id="nav-transaksi" onclick="switchTab('transaksi')"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
+    <a class="nav-item-bottom" id="nav-warga" onclick="switchTab('warga')"><i class="fas fa-users text-info"></i><span>Warga</span></a>
+    <a class="nav-item-bottom" onclick="previewWA()"><i class="fab fa-whatsapp text-success"></i><span>Share</span></a>
+    <a class="nav-item-bottom" onclick="openSettingsModal()"><i class="fas fa-cog text-dark"></i><span>Pengaturan</span></a>
 </nav>
 
 <!-- ==================== MODAL PENGATURAN (PIN, QUESTION, RESET) ==================== -->
@@ -440,12 +505,10 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzjaKvv08JpcPEJ2UKZqpSett4gAOTTDIVG08ZYQ3KM9C3imecDoWGzpbU-n8ffumMzqA/exec";
     // ==========================================
 
-    // Kunci Penyimpanan Lokal PIN & Pertanyaan Keamanan
     const STORAGE_PIN_KEY = "inventaris_rt_pin";
     const STORAGE_Q_KEY = "inventaris_rt_sec_q";
     const STORAGE_A_KEY = "inventaris_rt_sec_a";
 
-    // Nilai Default Awal
     const DEFAULT_PIN = "123456";
     const DEFAULT_QUESTION = "Apa nama perumahan atau wilayah RT ini?";
     const DEFAULT_ANSWER = "GPM";
@@ -455,17 +518,33 @@
     let deferredPrompt;
     let pendingConfirmCallback = null;
 
-    // Inisialisasi Pengaturan Keamanan Default jika belum ada
     function initSecurityDefaults() {
-        if (!localStorage.getItem(STORAGE_PIN_KEY)) {
-            localStorage.setItem(STORAGE_PIN_KEY, DEFAULT_PIN);
+        if (!localStorage.getItem(STORAGE_PIN_KEY)) localStorage.setItem(STORAGE_PIN_KEY, DEFAULT_PIN);
+        if (!localStorage.getItem(STORAGE_Q_KEY)) localStorage.setItem(STORAGE_Q_KEY, DEFAULT_QUESTION);
+        if (!localStorage.getItem(STORAGE_A_KEY)) localStorage.setItem(STORAGE_A_KEY, DEFAULT_ANSWER);
+    }
+
+    // --- NAVIGASI TAB HALAMAN ---
+    function switchTab(tabName) {
+        // Sembunyikan semua view
+        document.querySelectorAll('.app-tab-view').forEach(el => el.style.display = 'none');
+        
+        // Tampilkan view yang dipilih
+        const targetView = document.getElementById('tab-' + tabName);
+        if (targetView) targetView.style.display = 'block';
+
+        // Atur status aktif pada navigasi bawah
+        document.querySelectorAll('.nav-item-bottom').forEach(nav => nav.classList.remove('active-tab'));
+        const activeNav = document.getElementById('nav-' + tabName);
+        if (activeNav) activeNav.classList.add('active-tab');
+
+        // Tampilkan tombol Home di header atas jika sedang tidak berada di Dashboard
+        const btnHome = document.getElementById('btnHomeTop');
+        if (btnHome) {
+            btnHome.style.display = (tabName === 'dashboard') ? 'none' : 'inline-block';
         }
-        if (!localStorage.getItem(STORAGE_Q_KEY)) {
-            localStorage.setItem(STORAGE_Q_KEY, DEFAULT_QUESTION);
-        }
-        if (!localStorage.getItem(STORAGE_A_KEY)) {
-            localStorage.setItem(STORAGE_A_KEY, DEFAULT_ANSWER);
-        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // --- LOGIKA KEYPAD PIN AWAL ---
@@ -507,6 +586,7 @@
             document.getElementById('pinLockScreen').style.display = 'none';
             enteredPin = "";
             updatePinDots();
+            switchTab('dashboard');
             if (!appData) loadData();
         } else {
             const dotsEl = document.getElementById('pinDotsContainer');
@@ -531,16 +611,21 @@
     function toggleForgotPin(showForgot) {
         document.getElementById('pinErrorMsg').innerText = "";
         document.getElementById('recoveryErrorMsg').innerText = "";
+        const pinView = document.getElementById('viewPinInput');
+        const forgotView = document.getElementById('viewForgotPin');
+
         if (showForgot) {
-            document.getElementById('viewPinInput').style.display = 'none';
-            document.getElementById('viewForgotPin').style.display = 'block';
+            pinView.classList.remove('d-flex');
+            pinView.style.display = 'none';
+            forgotView.style.display = 'block';
             document.getElementById('lockSubtitle').innerText = "Verifikasi Pertanyaan Keamanan";
             document.getElementById('displayRecoveryQuestion').innerText = localStorage.getItem(STORAGE_Q_KEY) || DEFAULT_QUESTION;
             document.getElementById('inpRecoveryAnswer').value = "";
             document.getElementById('inpRecoveryNewPin').value = "";
         } else {
-            document.getElementById('viewForgotPin').style.display = 'none';
-            document.getElementById('viewPinInput').style.display = 'block';
+            forgotView.style.display = 'none';
+            pinView.style.display = 'flex';
+            pinView.classList.add('d-flex');
             document.getElementById('lockSubtitle').innerText = "Masukkan 6 Digit PIN Admin";
         }
     }
@@ -568,6 +653,7 @@
         showToast("PIN berhasil diperbarui!", "bg-success");
         toggleForgotPin(false);
         document.getElementById('pinLockScreen').style.display = 'none';
+        switchTab('dashboard');
         if (!appData) loadData();
     }
 
@@ -602,7 +688,7 @@
         showToast("Pengaturan PIN & Pertanyaan Keamanan disimpan!", "bg-success");
     });
 
-    // --- TOAST & MODAL KONFIRMASI CUSTOM (TANPA ALERT/CONFIRM/PROMPT BROWSER) ---
+    // --- TOAST & MODAL KONFIRMASI CUSTOM ---
     function showToast(msg, bgClass = "bg-dark") {
         const toastEl = document.getElementById('liveToast');
         toastEl.className = `toast align-items-center text-white border-0 shadow ${bgClass}`;
@@ -669,13 +755,11 @@
     // --- INISIALISASI HALAMAN ---
     document.addEventListener("DOMContentLoaded", function() {
         initSecurityDefaults();
-        // Pre-load data di latar belakang agar saat PIN dibuka data langsung siap
         loadData(true);
     });
 
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
-    function scrollToElement(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
     function openModal(id) { bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show(); }
     function closeModal(id) { bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide(); }
@@ -787,16 +871,24 @@
     function renderBarang() {
         const tbody = document.getElementById('table-barang'); const selectBarang = document.getElementById('inpTransBarang');
         tbody.innerHTML = ""; selectBarang.innerHTML = "<option value=''>-- Pilih Barang --</option>";
+        if (!appData.inventaris || appData.inventaris.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Belum ada data barang. Klik <b>+ Tambah Barang</b> di atas.</td></tr>`;
+            return;
+        }
         appData.inventaris.forEach(b => {
             let totalAwal = b.stok + b.dipinjam;
             let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${b.nama}', ${totalAwal})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${b.nama}')"><i class="fas fa-trash"></i></button>`;
-            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td><td class="text-nowrap">${aksiBtn}</td></tr>`;
+            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td><td class="text-nowrap text-center">${aksiBtn}</td></tr>`;
             selectBarang.innerHTML += `<option value="${b.nama}">${b.nama} (Tersedia: ${b.stok})</option>`;
         });
     }
 
     function renderTransaksi() {
         const tbody = document.getElementById('table-transaksi'); tbody.innerHTML = "";
+        if (!appData.transaksi || appData.transaksi.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Belum ada riwayat transaksi. Klik <b>+ Catat Transaksi</b> di atas.</td></tr>`;
+            return;
+        }
         appData.transaksi.forEach(t => {
             let badgeColor = 'secondary';
             if(t.jenis === 'Barang Sumbangan') badgeColor = 'success';
@@ -819,7 +911,10 @@
     function renderWarga() {
         const selectWarga = document.getElementById('inpTransWarga'); const tableWarga = document.getElementById('table-warga-master');
         selectWarga.innerHTML = "<option value=''>-- Pilih Warga --</option>"; tableWarga.innerHTML = "";
-        if(!appData.warga || appData.warga.length === 0) return;
+        if(!appData.warga || appData.warga.length === 0) {
+            tableWarga.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-4">Belum ada data warga. Klik <b>+ Tambah Warga</b> di atas.</td></tr>`;
+            return;
+        }
 
         appData.warga.sort((a,b) => a.nama.localeCompare(b.nama));
         appData.warga.forEach(w => {
