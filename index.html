@@ -18,10 +18,10 @@
         .card-stat:active { transform: scale(0.95); }
         .table-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;}
         .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-around; padding: 12px 0 8px 0; z-index: 1030; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        .nav-item-bottom { text-align: center; color: #6c757d; text-decoration: none; font-size: 0.75rem; font-weight: 500; display: flex; flex-direction: column; align-items: center; width: 20%; transition: 0.3s; }
-        .nav-item-bottom i { font-size: 1.4rem; margin-bottom: 4px; }
+        .nav-item-bottom { text-align: center; color: #6c757d; text-decoration: none; font-size: 0.72rem; font-weight: 500; display: flex; flex-direction: column; align-items: center; width: 20%; transition: 0.3s; }
+        .nav-item-bottom i { font-size: 1.35rem; margin-bottom: 4px; }
         .nav-item-bottom:hover, .nav-item-bottom:active { color: #0d6efd; }
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; text-align: center; padding-top: 30vh; }
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 9998; text-align: center; padding-top: 30vh; }
         .list-warga-item { background-color: #ffffff; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .border-left-warning { border-left: 5px solid #ffc107; }
         .border-left-success { border-left: 5px solid #198754; }
@@ -30,17 +30,184 @@
         
         /* Style Banner Install PWA */
         #installBanner { display: none; background: linear-gradient(135deg, #198754, #157347); color: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+
+        /* Style Lock Screen PIN */
+        #pinLockScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(160deg, #181c20 0%, #2b323b 100%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .pin-logo-wrap {
+            width: 88px; height: 88px;
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pin-logo-wrap img {
+            width: 100%; height: 100%; object-fit: contain; border-radius: 14px;
+        }
+        .pin-dots {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0 22px 0;
+        }
+        .pin-dot {
+            width: 15px; height: 15px;
+            border-radius: 50%;
+            border: 2px solid #ffc107;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        .pin-dot.filled {
+            background: #ffc107;
+            transform: scale(1.15);
+        }
+        .pin-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 74px);
+            gap: 12px;
+            justify-content: center;
+        }
+        .pin-key {
+            width: 74px; height: 60px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.15s;
+        }
+        .pin-key:active {
+            background: #ffc107;
+            color: #212529;
+            transform: scale(0.93);
+        }
+        .shake { animation: shakeAnim 0.35s; }
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+        }
     </style>
 </head>
 <body>
 
+<!-- ==================== LAYAR KUNCI PIN AWAL MASUK ==================== -->
+<div id="pinLockScreen">
+    <div class="pin-logo-wrap">
+        <img src="inventarisrt.png" alt="Logo Inventaris RT">
+    </div>
+    <h5 class="fw-bold mb-1 tracking-wide">INVENTARIS GUDANG RT</h5>
+    <small class="text-white-50 mb-1" id="lockSubtitle">Masukkan 6 Digit PIN Admin</small>
+
+    <!-- View 1: Input Keypad PIN -->
+    <div id="viewPinInput" class="text-center">
+        <div class="pin-dots" id="pinDotsContainer">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        <div id="pinErrorMsg" class="text-warning small fw-bold mb-2" style="min-height: 20px;"></div>
+
+        <div class="pin-keypad">
+            <button type="button" class="pin-key" onclick="pressPin('1')">1</button>
+            <button type="button" class="pin-key" onclick="pressPin('2')">2</button>
+            <button type="button" class="pin-key" onclick="pressPin('3')">3</button>
+            <button type="button" class="pin-key" onclick="pressPin('4')">4</button>
+            <button type="button" class="pin-key" onclick="pressPin('5')">5</button>
+            <button type="button" class="pin-key" onclick="pressPin('6')">6</button>
+            <button type="button" class="pin-key" onclick="pressPin('7')">7</button>
+            <button type="button" class="pin-key" onclick="pressPin('8')">8</button>
+            <button type="button" class="pin-key" onclick="pressPin('9')">9</button>
+            <button type="button" class="pin-key text-danger fs-6" onclick="clearPin()">Hapus</button>
+            <button type="button" class="pin-key" onclick="pressPin('0')">0</button>
+            <button type="button" class="pin-key text-warning" onclick="backspacePin()"><i class="fas fa-backspace"></i></button>
+        </div>
+
+        <div class="mt-4">
+            <button type="button" class="btn btn-link text-warning text-decoration-none btn-sm fw-bold" onclick="toggleForgotPin(true)">
+                <i class="fas fa-key me-1"></i> Lupa PIN? Reset dengan Pertanyaan Keamanan
+            </button>
+        </div>
+    </div>
+
+    <!-- View 2: Lupa PIN / Verifikasi Pertanyaan Keamanan -->
+    <div id="viewForgotPin" class="w-100" style="max-width: 360px; display: none;">
+        <div class="card bg-dark border-secondary text-white p-3 rounded-4 shadow mt-3">
+            <h6 class="fw-bold text-warning mb-2"><i class="fas fa-shield-alt me-1"></i> Pemulihan PIN Admin</h6>
+            <div class="mb-2">
+                <small class="text-white-50 d-block">Pertanyaan Keamanan:</small>
+                <p class="fw-bold mb-2 text-info" id="displayRecoveryQuestion">-</p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Jawaban Anda</label>
+                <input type="text" class="form-control bg-secondary text-white border-0" id="inpRecoveryAnswer" placeholder="Ketik jawaban keamanan...">
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Buat PIN Baru (6 Digit Angka)</label>
+                <input type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*" class="form-control bg-secondary text-white border-0 text-center fw-bold fs-5" id="inpRecoveryNewPin" placeholder="••••••">
+            </div>
+            <div id="recoveryErrorMsg" class="text-warning small fw-bold mb-2"></div>
+            <button type="button" class="btn btn-warning w-100 fw-bold mb-2" onclick="processRecoveryPin()">
+                <i class="fas fa-check-circle me-1"></i> Simpan PIN Baru & Masuk
+            </button>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" onclick="toggleForgotPin(false)">
+                <i class="fas fa-arrow-left me-1"></i> Kembali ke Layar PIN
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TOAST NOTIFIKASI ==================== -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10005;">
+    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0 shadow" role="alert">
+        <div class="d-flex">
+            <div class="toast-body fw-bold" id="toastMessage">Notifikasi</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== APLIKASI UTAMA ==================== -->
 <div id="loader"><div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3 text-primary fw-bold">Memproses...</h4></div>
-<datalist id="data-warga-list"></datalist>
 
 <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
-    <div class="container d-flex justify-content-between">
-        <span class="navbar-brand mb-0 h1 fw-bold"><i class="fas fa-boxes text-warning"></i> INVENTARIS RT</span>
-        <span class="badge bg-secondary">v1.15</span>
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="navbar-brand mb-0 h1 fw-bold d-flex align-items-center">
+            <img src="inventarisrt.png" alt="Logo" width="30" height="30" class="rounded me-2 bg-white p-1">
+            INVENTARIS RT
+        </span>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-secondary">v1.16</span>
+            <button class="btn btn-sm btn-outline-warning" onclick="lockApp()" title="Kunci Aplikasi">
+                <i class="fas fa-lock"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-light" onclick="openSettingsModal()" title="Pengaturan PIN & Data">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
     </div>
 </nav>
 
@@ -110,19 +277,10 @@
         </div>
     </div>
 
-    <!-- AREA TOMBOL RESET -->
+    <!-- FOOTER BRANDING -->
     <div class="text-center mt-5 mb-5 pb-4">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted d-block mb-3">Versi Update Terkini: v1.15</small>
-        
-        <div class="d-grid gap-2 col-10 col-md-6 mx-auto mt-4">
-            <button class="btn btn-sm btn-outline-warning shadow-sm" onclick="resetTransaksi()">
-                <i class="fas fa-history"></i> Kosongkan Riwayat Transaksi Saja
-            </button>
-            <button class="btn btn-sm btn-outline-danger shadow-sm" onclick="resetSemuaData()">
-                <i class="fas fa-dumpster"></i> Reset Total (Hapus Semua)
-            </button>
-        </div>
+        <small class="text-muted d-block">Versi Update Terkini: v1.16 (PIN Security & Recovery)</small>
     </div>
 </div>
 
@@ -130,10 +288,94 @@
 <nav class="bottom-navbar">
     <a href="#" class="nav-item-bottom" onclick="resetModalBarang()"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
     <a href="#" class="nav-item-bottom" onclick="resetModalTransaksi()"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
-    <a href="#section-inventaris" class="nav-item-bottom" onclick="scrollToElement('section-inventaris')"><i class="fas fa-list-alt text-secondary"></i><span>Inventaris</span></a>
     <a href="#" class="nav-item-bottom" onclick="resetModalWarga()"><i class="fas fa-users text-info"></i><span>Warga</span></a>
     <a href="#" class="nav-item-bottom" onclick="previewWA()"><i class="fab fa-whatsapp text-success"></i><span>Share</span></a>
+    <a href="#" class="nav-item-bottom" onclick="openSettingsModal()"><i class="fas fa-cog text-dark"></i><span>Pengaturan</span></a>
 </nav>
+
+<!-- ==================== MODAL PENGATURAN (PIN, QUESTION, RESET) ==================== -->
+<div class="modal fade" id="modalSettings" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fw-bold"><i class="fas fa-cog text-warning me-2"></i>Pengaturan Aplikasi</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Bagian 1: Pengaturan Keamanan PIN & Pertanyaan Pemulihan -->
+        <div class="card border-primary mb-4">
+            <div class="card-header bg-primary text-white fw-bold">
+                <i class="fas fa-user-shield me-1"></i> Keamanan PIN & Pemulihan
+            </div>
+            <div class="card-body">
+                <form id="formSecuritySettings">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">PIN Baru (6 Digit Angka)</label>
+                        <input type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" class="form-control fw-bold text-center fs-5" id="setPinBaru" required>
+                        <small class="text-muted">Gunakan 6 angka untuk mengunci akses aplikasi.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Pertanyaan Keamanan (Untuk Lupa PIN)</label>
+                        <input type="text" class="form-control" id="setPertanyaan" placeholder="Contoh: Apa nama ketua RT saat ini?" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Jawaban Pertanyaan Keamanan</label>
+                        <input type="text" class="form-control" id="setJawaban" placeholder="Ketik jawaban rahasia..." required>
+                        <small class="text-muted">Jawaban tidak membedakan huruf besar/kecil.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="fas fa-save me-1"></i> Simpan Pengaturan PIN
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bagian 2: Zona Reset Database -->
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white fw-bold">
+                <i class="fas fa-exclamation-triangle me-1"></i> Zona Reset Database
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">Gunakan fitur di bawah ini untuk tutup buku periode atau mengosongkan database.</p>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-warning text-dark fw-bold" onclick="openConfirmReset('transaksi')">
+                        <i class="fas fa-history me-1"></i> Kosongkan Riwayat Transaksi Saja
+                    </button>
+                    <button type="button" class="btn btn-outline-danger fw-bold" onclick="openConfirmReset('semua')">
+                        <i class="fas fa-dumpster me-1"></i> Reset Total (Hapus Semua Data)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL KONFIRMASI CUSTOM ==================== -->
+<div class="modal fade" id="modalConfirmAction" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white" id="confirmModalHeader">
+        <h5 class="modal-title fw-bold" id="confirmModalTitle">Konfirmasi</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmModalText" class="mb-3"></p>
+        <div id="confirmKeywordWrap" style="display:none;" class="mb-3">
+            <label class="form-label small fw-bold text-danger" id="confirmKeywordLabel">Ketik kata kunci:</label>
+            <input type="text" class="form-control text-center fw-bold" id="inpConfirmKeyword" placeholder="...">
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary w-50" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-danger w-50 fw-bold" id="btnConfirmProceed">Ya, Lanjutkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Tambah/Edit Barang -->
 <div class="modal fade" id="modalBarang" tabindex="-1">
@@ -198,19 +440,216 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzjaKvv08JpcPEJ2UKZqpSett4gAOTTDIVG08ZYQ3KM9C3imecDoWGzpbU-n8ffumMzqA/exec";
     // ==========================================
 
+    // Kunci Penyimpanan Lokal PIN & Pertanyaan Keamanan
+    const STORAGE_PIN_KEY = "inventaris_rt_pin";
+    const STORAGE_Q_KEY = "inventaris_rt_sec_q";
+    const STORAGE_A_KEY = "inventaris_rt_sec_a";
+
+    // Nilai Default Awal
+    const DEFAULT_PIN = "123456";
+    const DEFAULT_QUESTION = "Apa nama perumahan atau wilayah RT ini?";
+    const DEFAULT_ANSWER = "GPM";
+
+    let enteredPin = "";
     let appData = null;
     let deferredPrompt;
+    let pendingConfirmCallback = null;
 
-    // Registrasi Service Worker untuk PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('ServiceWorker registered!', reg))
-                .catch(err => console.log('ServiceWorker error:', err));
+    // Inisialisasi Pengaturan Keamanan Default jika belum ada
+    function initSecurityDefaults() {
+        if (!localStorage.getItem(STORAGE_PIN_KEY)) {
+            localStorage.setItem(STORAGE_PIN_KEY, DEFAULT_PIN);
+        }
+        if (!localStorage.getItem(STORAGE_Q_KEY)) {
+            localStorage.setItem(STORAGE_Q_KEY, DEFAULT_QUESTION);
+        }
+        if (!localStorage.getItem(STORAGE_A_KEY)) {
+            localStorage.setItem(STORAGE_A_KEY, DEFAULT_ANSWER);
+        }
+    }
+
+    // --- LOGIKA KEYPAD PIN AWAL ---
+    function updatePinDots() {
+        const dots = document.querySelectorAll('#pinDotsContainer .pin-dot');
+        dots.forEach((dot, idx) => {
+            if (idx < enteredPin.length) dot.classList.add('filled');
+            else dot.classList.remove('filled');
         });
     }
 
-    // Tangkap event instalasi PWA
+    function pressPin(num) {
+        if (enteredPin.length >= 6) return;
+        document.getElementById('pinErrorMsg').innerText = "";
+        enteredPin += num;
+        updatePinDots();
+
+        if (enteredPin.length === 6) {
+            setTimeout(verifyPin, 120);
+        }
+    }
+
+    function backspacePin() {
+        if (enteredPin.length > 0) {
+            enteredPin = enteredPin.slice(0, -1);
+            updatePinDots();
+        }
+    }
+
+    function clearPin() {
+        enteredPin = "";
+        document.getElementById('pinErrorMsg').innerText = "";
+        updatePinDots();
+    }
+
+    function verifyPin() {
+        const savedPin = localStorage.getItem(STORAGE_PIN_KEY) || DEFAULT_PIN;
+        if (enteredPin === savedPin) {
+            document.getElementById('pinLockScreen').style.display = 'none';
+            enteredPin = "";
+            updatePinDots();
+            if (!appData) loadData();
+        } else {
+            const dotsEl = document.getElementById('pinDotsContainer');
+            dotsEl.classList.add('shake');
+            document.getElementById('pinErrorMsg').innerText = "PIN Salah! Silakan coba lagi.";
+            setTimeout(() => {
+                dotsEl.classList.remove('shake');
+                enteredPin = "";
+                updatePinDots();
+            }, 400);
+        }
+    }
+
+    function lockApp() {
+        enteredPin = "";
+        updatePinDots();
+        toggleForgotPin(false);
+        document.getElementById('pinLockScreen').style.display = 'flex';
+    }
+
+    // --- LOGIKA LUPA PIN (PERTANYAAN KEAMANAN) ---
+    function toggleForgotPin(showForgot) {
+        document.getElementById('pinErrorMsg').innerText = "";
+        document.getElementById('recoveryErrorMsg').innerText = "";
+        if (showForgot) {
+            document.getElementById('viewPinInput').style.display = 'none';
+            document.getElementById('viewForgotPin').style.display = 'block';
+            document.getElementById('lockSubtitle').innerText = "Verifikasi Pertanyaan Keamanan";
+            document.getElementById('displayRecoveryQuestion').innerText = localStorage.getItem(STORAGE_Q_KEY) || DEFAULT_QUESTION;
+            document.getElementById('inpRecoveryAnswer').value = "";
+            document.getElementById('inpRecoveryNewPin').value = "";
+        } else {
+            document.getElementById('viewForgotPin').style.display = 'none';
+            document.getElementById('viewPinInput').style.display = 'block';
+            document.getElementById('lockSubtitle').innerText = "Masukkan 6 Digit PIN Admin";
+        }
+    }
+
+    function processRecoveryPin() {
+        const userAns = document.getElementById('inpRecoveryAnswer').value.trim().toLowerCase();
+        const savedAns = (localStorage.getItem(STORAGE_A_KEY) || DEFAULT_ANSWER).trim().toLowerCase();
+        const newPin = document.getElementById('inpRecoveryNewPin').value.trim();
+        const errEl = document.getElementById('recoveryErrorMsg');
+
+        if (!userAns) {
+            errEl.innerText = "Harap isi jawaban pertanyaan keamanan!";
+            return;
+        }
+        if (userAns !== savedAns) {
+            errEl.innerText = "Jawaban keamanan tidak cocok!";
+            return;
+        }
+        if (!/^\d{6}$/.test(newPin)) {
+            errEl.innerText = "PIN baru harus terdiri dari 6 digit angka!";
+            return;
+        }
+
+        localStorage.setItem(STORAGE_PIN_KEY, newPin);
+        showToast("PIN berhasil diperbarui!", "bg-success");
+        toggleForgotPin(false);
+        document.getElementById('pinLockScreen').style.display = 'none';
+        if (!appData) loadData();
+    }
+
+    // --- LOGIKA MODAL PENGATURAN ---
+    function openSettingsModal() {
+        document.getElementById('setPinBaru').value = localStorage.getItem(STORAGE_PIN_KEY) || DEFAULT_PIN;
+        document.getElementById('setPertanyaan').value = localStorage.getItem(STORAGE_Q_KEY) || DEFAULT_QUESTION;
+        document.getElementById('setJawaban').value = localStorage.getItem(STORAGE_A_KEY) || DEFAULT_ANSWER;
+        openModal('modalSettings');
+    }
+
+    document.getElementById('formSecuritySettings').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const pinBaru = document.getElementById('setPinBaru').value.trim();
+        const pertanyaan = document.getElementById('setPertanyaan').value.trim();
+        const jawaban = document.getElementById('setJawaban').value.trim();
+
+        if (!/^\d{6}$/.test(pinBaru)) {
+            showToast("PIN harus 6 digit angka!", "bg-danger");
+            return;
+        }
+        if (!pertanyaan || !jawaban) {
+            showToast("Pertanyaan dan jawaban tidak boleh kosong!", "bg-danger");
+            return;
+        }
+
+        localStorage.setItem(STORAGE_PIN_KEY, pinBaru);
+        localStorage.setItem(STORAGE_Q_KEY, pertanyaan);
+        localStorage.setItem(STORAGE_A_KEY, jawaban);
+
+        closeModal('modalSettings');
+        showToast("Pengaturan PIN & Pertanyaan Keamanan disimpan!", "bg-success");
+    });
+
+    // --- TOAST & MODAL KONFIRMASI CUSTOM (TANPA ALERT/CONFIRM/PROMPT BROWSER) ---
+    function showToast(msg, bgClass = "bg-dark") {
+        const toastEl = document.getElementById('liveToast');
+        toastEl.className = `toast align-items-center text-white border-0 shadow ${bgClass}`;
+        document.getElementById('toastMessage').innerText = msg;
+        bootstrap.Toast.getOrCreateInstance(toastEl).show();
+    }
+
+    function showCustomConfirm({ title, message, headerClass = "bg-danger text-white", requiredKeyword = null, onConfirm }) {
+        document.getElementById('confirmModalTitle').innerText = title;
+        document.getElementById('confirmModalText').innerText = message;
+        document.getElementById('confirmModalHeader').className = `modal-header ${headerClass}`;
+
+        const kwWrap = document.getElementById('confirmKeywordWrap');
+        const kwInput = document.getElementById('inpConfirmKeyword');
+        kwInput.value = "";
+
+        if (requiredKeyword) {
+            kwWrap.style.display = 'block';
+            document.getElementById('confirmKeywordLabel').innerText = `Ketik kata '${requiredKeyword}' untuk konfirmasi:`;
+            kwInput.placeholder = requiredKeyword;
+        } else {
+            kwWrap.style.display = 'none';
+        }
+
+        pendingConfirmCallback = () => {
+            if (requiredKeyword && kwInput.value.trim() !== requiredKeyword) {
+                showToast(`Kata kunci salah! Ketik ${requiredKeyword}`, "bg-danger");
+                return;
+            }
+            closeModal('modalConfirmAction');
+            onConfirm();
+        };
+
+        openModal('modalConfirmAction');
+    }
+
+    document.getElementById('btnConfirmProceed').addEventListener('click', function() {
+        if (pendingConfirmCallback) pendingConfirmCallback();
+    });
+
+    // --- PWA SERVICE WORKER & INSTALL BANNER ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+        });
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -220,17 +659,19 @@
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                }
+            deferredPrompt.userChoice.then(() => {
                 deferredPrompt = null;
                 document.getElementById('installBanner').style.display = 'none';
             });
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function() { loadData(); });
+    // --- INISIALISASI HALAMAN ---
+    document.addEventListener("DOMContentLoaded", function() {
+        initSecurityDefaults();
+        // Pre-load data di latar belakang agar saat PIN dibuka data langsung siap
+        loadData(true);
+    });
 
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
@@ -239,19 +680,28 @@
     function openModal(id) { bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show(); }
     function closeModal(id) { bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide(); }
 
-    async function loadData() {
-        if(!GAS_URL || GAS_URL === "URL_GAS_ANDA_DISINI") return alert("Harap isi GAS_URL!");
-        showLoader();
+    async function loadData(silent = false) {
+        if(!GAS_URL) return showToast("URL GAS belum diatur!", "bg-danger");
+        if(!silent) showLoader();
         try {
             const response = await fetch(GAS_URL + "?action=get_all");
             const result = await response.json();
-            if(result.status === "success") { appData = result; renderDashboard(); renderBarang(); renderTransaksi(); renderWarga(); } 
-            else { alert("Error dari Server: " + result.message); }
-        } catch(e) { alert("Gagal memuat database. Pastikan URL GAS benar."); }
-        hideLoader();
+            if(result.status === "success") {
+                appData = result;
+                renderDashboard();
+                renderBarang();
+                renderTransaksi();
+                renderWarga();
+            } else {
+                if(!silent) showToast("Error Server: " + result.message, "bg-danger");
+            }
+        } catch(e) {
+            if(!silent) showToast("Gagal memuat database. Periksa koneksi internet.", "bg-danger");
+        }
+        if(!silent) hideLoader();
     }
 
-    async function sendPostRequest(payload) {
+    async function sendPostRequest(payload, successMsg = "Data berhasil diperbarui!") {
         showLoader();
         try {
             const response = await fetch(GAS_URL, {
@@ -260,39 +710,44 @@
                 body: new URLSearchParams({ data: JSON.stringify(payload) })
             });
             const result = await response.json();
-            if(result.status === "success") { await loadData(); }
-            else { alert("Gagal menyimpan data: " + result.message); }
-        } catch (e) { alert("Gagal mengirim data. Terjadi kesalahan jaringan."); }
+            if(result.status === "success") {
+                await loadData(true);
+                showToast(successMsg, "bg-success");
+            } else {
+                showToast("Gagal: " + result.message, "bg-danger");
+            }
+        } catch (e) {
+            showToast("Gagal mengirim data. Terjadi kesalahan jaringan.", "bg-danger");
+        }
         hideLoader();
     }
 
     function hapusData(sheet, id) {
-        if(confirm(`Anda yakin ingin menghapus data ini dari ${sheet}?`)) {
-            sendPostRequest({ action: 'hapus_data', sheet: sheet, id: id });
-        }
+        showCustomConfirm({
+            title: `Hapus Data ${sheet}`,
+            message: `Anda yakin ingin menghapus data ini dari ${sheet}?`,
+            onConfirm: () => sendPostRequest({ action: 'hapus_data', sheet: sheet, id: id }, "Data berhasil dihapus!")
+        });
     }
 
-    function resetTransaksi() {
-        let konfirmasi1 = confirm("PERHATIAN!\n\nAnda akan menghapus SELURUH RIWAYAT TRANSAKSI (Pinjam, Kembali, Rusak, Sumbangan).\n\nData Master Barang dan Warga TETAP AMAN.\nLanjutkan?");
-        if(konfirmasi1) {
-            let konfirmasi2 = prompt("Ketik kata 'BERSIH' (huruf besar) untuk mengonfirmasi pengosongan transaksi:");
-            if(konfirmasi2 === "BERSIH") {
-                sendPostRequest({ action: 'reset_transaksi' });
-            } else {
-                alert("Dibatalkan. Kata kunci salah.");
-            }
-        }
-    }
-
-    function resetSemuaData() {
-        let konfirmasi1 = confirm("PERINGATAN BERBAHAYA!\n\nAnda akan MENGHAPUS SEMUA DATA Barang, Transaksi, dan Warga secara permanen.\n\nLanjutkan?");
-        if(konfirmasi1) {
-            let konfirmasi2 = prompt("Ketik kata 'RESET' (huruf besar) pada kolom di bawah ini untuk mengonfirmasi penghapusan seluruh data:");
-            if(konfirmasi2 === "RESET") {
-                sendPostRequest({ action: 'reset_data' });
-            } else {
-                alert("Penghapusan dibatalkan. Kata kunci salah.");
-            }
+    function openConfirmReset(mode) {
+        closeModal('modalSettings');
+        if (mode === 'transaksi') {
+            showCustomConfirm({
+                title: "Kosongkan Riwayat Transaksi",
+                message: "Seluruh riwayat transaksi (Pinjam, Kembali, Rusak, Sumbangan) akan dihapus. Data Master Barang dan Warga tetap aman.",
+                headerClass: "bg-warning text-dark",
+                requiredKeyword: "BERSIH",
+                onConfirm: () => sendPostRequest({ action: 'reset_transaksi' }, "Riwayat transaksi berhasil dikosongkan!")
+            });
+        } else if (mode === 'semua') {
+            showCustomConfirm({
+                title: "Reset Total Semua Data",
+                message: "PERINGATAN! Semua data Barang, Transaksi, dan Warga akan dihapus permanen.",
+                headerClass: "bg-danger text-white",
+                requiredKeyword: "RESET",
+                onConfirm: () => sendPostRequest({ action: 'reset_data' }, "Seluruh database berhasil direset!")
+            });
         }
     }
 
@@ -379,7 +834,7 @@
         let idLama = document.getElementById('inpBarangIdLama').value;
         let payload = { action: idLama ? 'edit_barang' : 'tambah_barang', nama: document.getElementById('inpBarangNama').value, stok_awal: document.getElementById('inpBarangStok').value };
         if(idLama) payload.id_lama = idLama;
-        sendPostRequest(payload); closeModal('modalBarang'); this.reset();
+        sendPostRequest(payload, "Data barang disimpan!"); closeModal('modalBarang'); this.reset();
     });
 
     document.getElementById('formWarga').addEventListener('submit', function(e) {
@@ -387,7 +842,7 @@
         let idWarga = document.getElementById('inpWargaId').value;
         let payload = { action: idWarga ? 'edit_warga' : 'tambah_warga', nama_warga: document.getElementById('inpWargaNama').value, keterangan_warga: document.getElementById('inpWargaKet').value };
         if(idWarga) payload.id = idWarga;
-        sendPostRequest(payload); closeModal('modalWarga'); this.reset();
+        sendPostRequest(payload, "Data warga disimpan!"); closeModal('modalWarga'); this.reset();
     });
 
     document.getElementById('formTransaksi').addEventListener('submit', function(e) {
@@ -399,15 +854,20 @@
             jumlah: document.getElementById('inpTransJumlah').value, warga: document.getElementById('inpTransWarga').value, petugas: document.getElementById('inpTransPetugas').value
         };
         if(idTrans) payload.id = idTrans;
-        sendPostRequest(payload); closeModal('modalTransaksi'); this.reset(); 
+        sendPostRequest(payload, "Transaksi berhasil dicatat!"); closeModal('modalTransaksi'); this.reset(); 
     });
 
     function kembalikanBarang(idTrans) {
-        if(confirm("Konfirmasi: Apakah barang ini sudah diterima kembali secara utuh?")) { sendPostRequest({ action: 'kembalikan_barang', id: idTrans }); }
+        showCustomConfirm({
+            title: "Konfirmasi Pengembalian",
+            message: "Apakah barang ini sudah diterima kembali secara utuh?",
+            headerClass: "bg-primary text-white",
+            onConfirm: () => sendPostRequest({ action: 'kembalikan_barang', id: idTrans }, "Barang ditandai sudah kembali!")
+        });
     }
 
     function previewWA() {
-        if(!appData) return alert("Data belum termuat!");
+        if(!appData) return showToast("Data belum termuat!", "bg-warning text-dark");
         let d = new Date(); let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
         let text = "==========================\n 📋 NOTA INVENTARIS RT \n==========================\nTanggal : " + dateStr + "\nAdmin   : Sistem RT\n--------------------------\n📦 STATUS STOK BARANG :\n";
         
@@ -430,7 +890,7 @@
 
     function kirimWA() {
         let finalMessage = document.getElementById('textPreviewWA').value;
-        if(finalMessage.trim() === "") return alert("Pesan kosong!");
+        if(finalMessage.trim() === "") return showToast("Pesan tidak boleh kosong!", "bg-warning text-dark");
         window.open(`https://wa.me/?text=${encodeURIComponent(finalMessage)}`, '_blank');
         closeModal('modalPreviewWA');
     }
