@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventaris Gudang RT</title>
+    <!-- PWA Meta Tags & Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="inventarisrt.png">
+    <meta name="theme-color" content="#212529">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,6 +27,9 @@
         .border-left-success { border-left: 5px solid #198754; }
         .pulse-danger { animation: pulse-red 1.5s infinite; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
+        
+        /* Style Banner Install PWA */
+        #installBanner { display: none; background: linear-gradient(135deg, #198754, #157347); color: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
@@ -32,11 +40,28 @@
 <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
     <div class="container d-flex justify-content-between">
         <span class="navbar-brand mb-0 h1 fw-bold"><i class="fas fa-boxes text-warning"></i> INVENTARIS RT</span>
-        <span class="badge bg-secondary">v1.11</span>
+        <span class="badge bg-secondary">v1.15</span>
     </div>
 </nav>
 
 <div class="container">
+    
+    <!-- BANNER INSTAL APLIKASI (MUNCUL OTOMATIS JIKA DIDUKUNG HP) -->
+    <div id="installBanner">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <img src="inventarisrt.png" alt="Logo" width="45" height="45" class="rounded-circle me-3 bg-white p-1">
+                <div>
+                    <h6 class="mb-0 fw-bold">Install Aplikasi Inventaris RT</h6>
+                    <small style="font-size: 0.8rem;">Akses lebih cepat & mudah langsung dari Layar Utama HP Anda!</small>
+                </div>
+            </div>
+            <button class="btn btn-light btn-sm fw-bold text-success px-3 shadow-sm" onclick="installApp()">
+                <i class="fas fa-download me-1"></i> Install
+            </button>
+        </div>
+    </div>
+
     <div class="row mb-3">
         <div class="col-6 mb-3"><div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Macam Barang</h6><h3 class="mb-0 fw-bold" id="dash-macam">0</h3></div></div>
         <div class="col-6 mb-3"><div class="card card-stat bg-info text-dark h-100 text-center p-2" onclick="scrollToElement('section-inventaris')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Total Jml Awal</h6><h3 class="mb-0 fw-bold" id="dash-total">0</h3></div></div>
@@ -49,26 +74,18 @@
         <div class="col-md-6 mb-3"><div class="p-3 rounded" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;"><h6 class="fw-bold text-dark border-bottom border-success pb-2 mb-3"><i class="fas fa-check-circle text-success"></i> Telah Dikembalikan</h6><div id="dash-kembali-list"></div></div></div>
     </div>
 
-    <!-- TABEL INVENTARIS DIPERBARUI (TAMBAH KOLOM JML AWAL) -->
     <div class="table-container" id="section-inventaris">
         <h5 class="fw-bold mb-3"><i class="fas fa-list text-primary"></i> Data Master Inventaris</h5>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-dark text-center">
-                    <tr>
-                        <th class="text-start">Nama Barang</th>
-                        <th>Jml Awal</th>
-                        <th>Tersedia</th>
-                        <th>Dipinjam</th>
-                        <th>Aksi</th>
-                    </tr>
+                    <tr><th class="text-start">Nama Barang</th><th>Jml Awal</th><th>Tersedia</th><th>Dipinjam</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="table-barang"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- TABEL TRANSAKSI -->
     <div class="table-container" id="section-transaksi">
         <h5 class="fw-bold mb-3"><i class="fas fa-history text-secondary"></i> Riwayat Transaksi Keseluruhan</h5>
         <div class="table-responsive">
@@ -81,7 +98,6 @@
         </div>
     </div>
 
-    <!-- TABEL DATA WARGA -->
     <div class="table-container" id="section-warga">
         <h5 class="fw-bold mb-3"><i class="fas fa-users text-info"></i> Master Data Warga</h5>
         <div class="table-responsive">
@@ -94,9 +110,19 @@
         </div>
     </div>
 
+    <!-- AREA TOMBOL RESET -->
     <div class="text-center mt-5 mb-5 pb-4">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted">Versi Update Terkini: v1.11 (Tabel Master + Jml Awal)</small>
+        <small class="text-muted d-block mb-3">Versi Update Terkini: v1.15</small>
+        
+        <div class="d-grid gap-2 col-10 col-md-6 mx-auto mt-4">
+            <button class="btn btn-sm btn-outline-warning shadow-sm" onclick="resetTransaksi()">
+                <i class="fas fa-history"></i> Kosongkan Riwayat Transaksi Saja
+            </button>
+            <button class="btn btn-sm btn-outline-danger shadow-sm" onclick="resetSemuaData()">
+                <i class="fas fa-dumpster"></i> Reset Total (Hapus Semua)
+            </button>
+        </div>
     </div>
 </div>
 
@@ -168,11 +194,41 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // ==========================================
-    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxYhlZjTVfkYnWl5nIM_aJeqlxeqywO_-2ZY9e_Dho9BaVEss1OOXEUfJAYew2u8xDE2w/exec";
+    // URL GOOGLE APPS SCRIPT AKTIF
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzjaKvv08JpcPEJ2UKZqpSett4gAOTTDIVG08ZYQ3KM9C3imecDoWGzpbU-n8ffumMzqA/exec";
     // ==========================================
 
     let appData = null;
+    let deferredPrompt;
+
+    // Registrasi Service Worker untuk PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('ServiceWorker registered!', reg))
+                .catch(err => console.log('ServiceWorker error:', err));
+        });
+    }
+
+    // Tangkap event instalasi PWA
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBanner').style.display = 'block';
+    });
+
+    function installApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                document.getElementById('installBanner').style.display = 'none';
+            });
+        }
+    }
 
     document.addEventListener("DOMContentLoaded", function() { loadData(); });
 
@@ -216,61 +272,37 @@
         }
     }
 
-    // --- FUNGSI RESET & BUKA MODAL ---
-    function resetModalBarang() {
-        document.getElementById('formBarang').reset();
-        document.getElementById('inpBarangIdLama').value = "";
-        document.getElementById('titleModalBarang').innerText = "Tambah Master Barang";
-        openModal('modalBarang');
-    }
-    // Perbaikan fungsi Edit Barang: Parameter stokLama sekarang mereferensikan stok awal (sebelum dipinjam dll) 
-    // namun di UI akan kita tangkap dari total_keseluruhan
-    function editBarang(namaLama, totalAwal) {
-        document.getElementById('inpBarangIdLama').value = namaLama;
-        document.getElementById('inpBarangNama').value = namaLama;
-        document.getElementById('inpBarangStok').value = totalAwal;
-        document.getElementById('titleModalBarang').innerText = "Edit Master Barang";
-        openModal('modalBarang');
-    }
-
-    function resetModalWarga() {
-        document.getElementById('formWarga').reset();
-        document.getElementById('inpWargaId').value = "";
-        document.getElementById('titleModalWarga').innerText = "Tambah Data Warga";
-        openModal('modalWarga');
-    }
-    function editWarga(idWarga) {
-        const w = appData.warga.find(x => x.id == idWarga);
-        if(w) {
-            document.getElementById('inpWargaId').value = w.id;
-            document.getElementById('inpWargaNama').value = w.nama;
-            document.getElementById('inpWargaKet').value = w.keterangan;
-            document.getElementById('titleModalWarga').innerText = "Edit Data Warga";
-            openModal('modalWarga');
+    function resetTransaksi() {
+        let konfirmasi1 = confirm("PERHATIAN!\n\nAnda akan menghapus SELURUH RIWAYAT TRANSAKSI (Pinjam, Kembali, Rusak, Sumbangan).\n\nData Master Barang dan Warga TETAP AMAN.\nLanjutkan?");
+        if(konfirmasi1) {
+            let konfirmasi2 = prompt("Ketik kata 'BERSIH' (huruf besar) untuk mengonfirmasi pengosongan transaksi:");
+            if(konfirmasi2 === "BERSIH") {
+                sendPostRequest({ action: 'reset_transaksi' });
+            } else {
+                alert("Dibatalkan. Kata kunci salah.");
+            }
         }
     }
 
-    function resetModalTransaksi() {
-        document.getElementById('formTransaksi').reset();
-        document.getElementById('inpTransId').value = "";
-        document.getElementById('titleModalTransaksi').innerText = "Catat Transaksi Baru";
-        openModal('modalTransaksi');
-    }
-    function editTransaksi(idTrans) {
-        const t = appData.transaksi.find(x => x.id == idTrans);
-        if(t) {
-            document.getElementById('inpTransId').value = t.id;
-            document.getElementById('inpTransJenis').value = t.jenis;
-            document.getElementById('inpTransBarang').value = t.barang;
-            document.getElementById('inpTransJumlah').value = t.jumlah;
-            document.getElementById('inpTransWarga').value = t.warga;
-            document.getElementById('inpTransPetugas').value = t.petugas;
-            document.getElementById('titleModalTransaksi').innerText = "Edit Transaksi";
-            openModal('modalTransaksi');
+    function resetSemuaData() {
+        let konfirmasi1 = confirm("PERINGATAN BERBAHAYA!\n\nAnda akan MENGHAPUS SEMUA DATA Barang, Transaksi, dan Warga secara permanen.\n\nLanjutkan?");
+        if(konfirmasi1) {
+            let konfirmasi2 = prompt("Ketik kata 'RESET' (huruf besar) pada kolom di bawah ini untuk mengonfirmasi penghapusan seluruh data:");
+            if(konfirmasi2 === "RESET") {
+                sendPostRequest({ action: 'reset_data' });
+            } else {
+                alert("Penghapusan dibatalkan. Kata kunci salah.");
+            }
         }
     }
 
-    // --- RENDER TAMPILAN ---
+    function resetModalBarang() { document.getElementById('formBarang').reset(); document.getElementById('inpBarangIdLama').value = ""; document.getElementById('titleModalBarang').innerText = "Tambah Master Barang"; openModal('modalBarang'); }
+    function editBarang(namaLama, totalAwal) { document.getElementById('inpBarangIdLama').value = namaLama; document.getElementById('inpBarangNama').value = namaLama; document.getElementById('inpBarangStok').value = totalAwal; document.getElementById('titleModalBarang').innerText = "Edit Master Barang"; openModal('modalBarang'); }
+    function resetModalWarga() { document.getElementById('formWarga').reset(); document.getElementById('inpWargaId').value = ""; document.getElementById('titleModalWarga').innerText = "Tambah Data Warga"; openModal('modalWarga'); }
+    function editWarga(idWarga) { const w = appData.warga.find(x => x.id == idWarga); if(w) { document.getElementById('inpWargaId').value = w.id; document.getElementById('inpWargaNama').value = w.nama; document.getElementById('inpWargaKet').value = w.keterangan; document.getElementById('titleModalWarga').innerText = "Edit Data Warga"; openModal('modalWarga'); } }
+    function resetModalTransaksi() { document.getElementById('formTransaksi').reset(); document.getElementById('inpTransId').value = ""; document.getElementById('titleModalTransaksi').innerText = "Catat Transaksi Baru"; openModal('modalTransaksi'); }
+    function editTransaksi(idTrans) { const t = appData.transaksi.find(x => x.id == idTrans); if(t) { document.getElementById('inpTransId').value = t.id; document.getElementById('inpTransJenis').value = t.jenis; document.getElementById('inpTransBarang').value = t.barang; document.getElementById('inpTransJumlah').value = t.jumlah; document.getElementById('inpTransWarga').value = t.warga; document.getElementById('inpTransPetugas').value = t.petugas; document.getElementById('titleModalTransaksi').innerText = "Edit Transaksi"; openModal('modalTransaksi'); } }
+
     function renderDashboard() {
         document.getElementById('dash-macam').innerText = appData.dashboard.macam_barang;
         document.getElementById('dash-stok').innerText = appData.dashboard.total_stok;
@@ -298,25 +330,12 @@
     }
 
     function renderBarang() {
-        const tbody = document.getElementById('table-barang'); 
-        const selectBarang = document.getElementById('inpTransBarang');
+        const tbody = document.getElementById('table-barang'); const selectBarang = document.getElementById('inpTransBarang');
         tbody.innerHTML = ""; selectBarang.innerHTML = "<option value=''>-- Pilih Barang --</option>";
-        
         appData.inventaris.forEach(b => {
-            // Kalkulasi Jml Awal untuk masing-masing barang (Tersedia + Dipinjam)
             let totalAwal = b.stok + b.dipinjam;
-            
             let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${b.nama}', ${totalAwal})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${b.nama}')"><i class="fas fa-trash"></i></button>`;
-            
-            // Kolom baru ditambahkan di sini
-            tbody.innerHTML += `
-            <tr>
-                <td class="fw-bold">${b.nama}</td>
-                <td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td>
-                <td class="text-center"><span class="badge bg-success">${b.stok}</span></td>
-                <td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td>
-                <td class="text-nowrap">${aksiBtn}</td>
-            </tr>`;
+            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td><td class="text-nowrap">${aksiBtn}</td></tr>`;
             selectBarang.innerHTML += `<option value="${b.nama}">${b.nama} (Tersedia: ${b.stok})</option>`;
         });
     }
@@ -355,7 +374,6 @@
         });
     }
 
-    // --- LISTENER FORM SUBMIT ---
     document.getElementById('formBarang').addEventListener('submit', function(e) {
         e.preventDefault();
         let idLama = document.getElementById('inpBarangIdLama').value;
