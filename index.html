@@ -31,7 +31,7 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.25);
         }
         .header-title-text {
-            font-size: 1.15rem;
+            font-size: 1.12rem;
             font-weight: 800;
             letter-spacing: 0.4px;
             line-height: 1.2;
@@ -39,7 +39,7 @@
             margin: 0;
         }
         .header-address-text {
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             color: #adb5bd;
             line-height: 1.25;
             margin-top: 2px;
@@ -98,7 +98,28 @@
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
         
         /* Style Banner Install PWA */
-        #installBanner { display: none; background: linear-gradient(135deg, #198754, #157347); color: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        #installBanner { 
+            display: none; 
+            background: linear-gradient(135deg, #198754, #146c43); 
+            color: white; 
+            border-radius: 14px; 
+            padding: 14px; 
+            margin-bottom: 18px; 
+            box-shadow: 0 6px 15px rgba(25, 135, 84, 0.25);
+            position: relative;
+        }
+
+        /* Style Banner Status Offline / Cadangan Lokal */
+        #offlineNotice {
+            display: none;
+            background-color: #fff3cd;
+            color: #664d03;
+            border: 1px solid #ffecb5;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            margin-bottom: 14px;
+        }
 
         /* Style Lock Screen PIN - Rapi & Presisi Tengah */
         #pinLockScreen {
@@ -281,18 +302,21 @@
 <!-- HEADER ATAS DIPERBESAR & SEIMBANG -->
 <header class="app-header mb-3 shadow sticky-top">
     <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center" style="cursor:pointer; max-width: 72%;" onclick="switchTab('dashboard')" title="Kembali ke Dashboard">
+        <div class="d-flex align-items-center" style="cursor:pointer; max-width: 65%;" onclick="switchTab('dashboard')" title="Kembali ke Dashboard">
             <img src="inventarisrt.png" alt="Logo" class="header-logo-img me-2 flex-shrink-0">
             <div class="overflow-hidden">
                 <h1 class="header-title-text text-truncate" id="headerAppTitle">INVENTARIS RT</h1>
                 <span class="header-address-text text-truncate" id="headerAppAddress"><i class="fas fa-map-marker-alt text-warning me-1"></i>GPM Blok N10 - Cangkiran, Mijen</span>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+        <div class="d-flex align-items-center gap-1 flex-shrink-0">
             <button class="btn btn-sm btn-outline-info py-1 px-2" onclick="switchTab('dashboard')" id="btnHomeTop" style="display:none;" title="Beranda Dashboard">
                 <i class="fas fa-home"></i>
             </button>
-            <span class="badge bg-secondary py-2 px-2">v1.18</span>
+            <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="loadData(false)" title="Sinkronkan Data">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <span class="badge bg-secondary py-2 px-2">v1.19</span>
             <button class="btn btn-sm btn-warning text-dark fw-bold py-1 px-2 shadow-sm" onclick="lockApp()" title="Kunci Aplikasi">
                 <i class="fas fa-lock"></i>
             </button>
@@ -302,20 +326,30 @@
 
 <div class="container">
     
-    <!-- BANNER INSTAL APLIKASI -->
+    <!-- BANNER INSTAL APLIKASI (OTOMATIS HILANG JIKA SUDAH TERINSTAL) -->
     <div id="installBanner">
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-between gap-2">
             <div class="d-flex align-items-center">
-                <img src="inventarisrt.png" alt="Logo" width="45" height="45" class="rounded-circle me-3 bg-white p-1">
+                <img src="inventarisrt.png" alt="Logo" width="44" height="44" class="rounded-3 me-2 bg-white p-1 flex-shrink-0">
                 <div>
-                    <h6 class="mb-0 fw-bold">Install Aplikasi Inventaris RT</h6>
-                    <small style="font-size: 0.8rem;">Akses lebih cepat & mudah langsung dari Layar Utama HP Anda!</small>
+                    <h6 class="mb-0 fw-bold" style="font-size: 0.92rem;">Install Aplikasi Inventaris RT</h6>
+                    <small style="font-size: 0.76rem; opacity: 0.95;">Pasang di layar utama HP agar akses lebih cepat & praktis!</small>
                 </div>
             </div>
-            <button class="btn btn-light btn-sm fw-bold text-success px-3 shadow-sm" onclick="installApp()">
-                <i class="fas fa-download me-1"></i> Install
-            </button>
+            <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                <button class="btn btn-light btn-sm fw-bold text-success px-3 shadow-sm" onclick="installApp()">
+                    <i class="fas fa-download me-1"></i> Install
+                </button>
+                <button class="btn btn-sm text-white-50 px-2" onclick="dismissInstallBanner()" title="Tutup">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
+    </div>
+
+    <!-- PEMBERITAHUAN MODE CADANGAN OFFLINE -->
+    <div id="offlineNotice">
+        <i class="fas fa-shield-alt me-1"></i> <b>Mode Cadangan Aktif:</b> Menampilkan data tersimpan di HP. Klik tombol <i class="fas fa-sync-alt"></i> di atas untuk menyinkronkan ulang ke server.
     </div>
 
     <!-- ==================== TAB 1: DASHBOARD UTAMA ==================== -->
@@ -415,7 +449,7 @@
     <!-- FOOTER BRANDING -->
     <div class="text-center mt-4 mb-4 pb-3">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted d-block">Versi Update Terkini: v1.18</small>
+        <small class="text-muted d-block">Versi Update Terkini: v1.19 (Smart PWA & Anti-Error)</small>
     </div>
 </div>
 
@@ -543,7 +577,7 @@
         <form id="formBarang">
             <input type="hidden" id="inpBarangIdLama">
             <div class="mb-3"><label class="form-label fw-bold">Nama Barang</label><input type="text" class="form-control" id="inpBarangNama" required></div>
-            <div class="mb-4"><label class="form-label fw-bold">Stok Awal</label><input type="number" class="form-control" id="inpBarangStok" value="0" required></div>
+            <div class="mb-4"><label class="form-label fw-bold">Stok Awal</label><input type="number" class="form-control" id="inpBarangStok" min="0" value="0" required></div>
             <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Simpan Data Barang</button>
         </form>
       </div>
@@ -603,6 +637,8 @@
     const STORAGE_A_KEY = "inventaris_rt_sec_a";
     const STORAGE_TITLE_KEY = "inventaris_rt_header_title";
     const STORAGE_ADDR_KEY = "inventaris_rt_header_addr";
+    const STORAGE_CACHE_KEY = "inventaris_rt_data_cache";
+    const STORAGE_INSTALLED_KEY = "inventaris_rt_pwa_installed";
 
     const DEFAULT_PIN = "123456";
     const DEFAULT_QUESTION = "Apa nama perumahan atau wilayah RT ini?";
@@ -612,8 +648,25 @@
 
     let enteredPin = "";
     let appData = null;
-    let deferredPrompt;
+    let deferredPrompt = null;
     let pendingConfirmCallback = null;
+    let isSubmitting = false; // Pengaman anti double-submit
+
+    // Helper Sanitasi Teks Anti-Error HTML
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return "";
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function escapeJSArg(str) {
+        if (str === null || str === undefined) return "";
+        return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    }
 
     function initAppDefaults() {
         if (!localStorage.getItem(STORAGE_PIN_KEY)) localStorage.setItem(STORAGE_PIN_KEY, DEFAULT_PIN);
@@ -629,10 +682,40 @@
         const address = localStorage.getItem(STORAGE_ADDR_KEY) || DEFAULT_ADDRESS;
 
         document.getElementById('headerAppTitle').innerText = title;
-        document.getElementById('headerAppAddress').innerHTML = `<i class="fas fa-map-marker-alt text-warning me-1"></i>${address}`;
+        document.getElementById('headerAppAddress').innerHTML = `<i class="fas fa-map-marker-alt text-warning me-1"></i>${escapeHTML(address)}`;
         document.getElementById('lockScreenTitle').innerText = title;
         document.getElementById('lockScreenAddress').innerText = address;
         document.title = title;
+    }
+
+    // --- DETEKSI STATUS INSTALASI PWA (TAMPIL SAAT BELUM TERINSTAL, SEMBUNYI SAAT SUDAH TERINSTAL) ---
+    function isAppAlreadyInstalled() {
+        // 1. Cek apakah sedang dijalankan sebagai aplikasi standalone (Android/Desktop)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches;
+        // 2. Cek mode standalone khusus Safari iOS
+        const isIOSStandalone = window.navigator.standalone === true;
+        // 3. Cek tanda riwayat instalasi di perangkat
+        const isMarkedInstalled = localStorage.getItem(STORAGE_INSTALLED_KEY) === "true";
+
+        return isStandalone || isIOSStandalone || isMarkedInstalled;
+    }
+
+    function updateInstallBannerVisibility() {
+        const banner = document.getElementById('installBanner');
+        if (!banner) return;
+
+        if (isAppAlreadyInstalled()) {
+            banner.style.display = 'none';
+            localStorage.setItem(STORAGE_INSTALLED_KEY, "true");
+        } else if (deferredPrompt) {
+            banner.style.display = 'block';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    function dismissInstallBanner() {
+        document.getElementById('installBanner').style.display = 'none';
     }
 
     // --- NAVIGASI TAB HALAMAN ---
@@ -694,6 +777,7 @@
             enteredPin = "";
             updatePinDots();
             switchTab('dashboard');
+            updateInstallBannerVisibility();
             if (!appData) loadData();
         } else {
             const dotsEl = document.getElementById('pinDotsContainer');
@@ -855,7 +939,7 @@
         if (pendingConfirmCallback) pendingConfirmCallback();
     });
 
-    // --- PWA SERVICE WORKER & INSTALL BANNER ---
+    // --- PWA SERVICE WORKER & EVENT INSTALASI ---
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
@@ -864,25 +948,70 @@
 
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
+        // Jika perangkat sudah terinstal aplikasinya, abaikan prompt & jangan tampilkan banner
+        if (isAppAlreadyInstalled()) {
+            document.getElementById('installBanner').style.display = 'none';
+            return;
+        }
         deferredPrompt = e;
         document.getElementById('installBanner').style.display = 'block';
+    });
+
+    window.addEventListener('appinstalled', () => {
+        localStorage.setItem(STORAGE_INSTALLED_KEY, "true");
+        deferredPrompt = null;
+        document.getElementById('installBanner').style.display = 'none';
+        showToast("Aplikasi berhasil diinstal di perangkat Anda!", "bg-success");
     });
 
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(() => {
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    localStorage.setItem(STORAGE_INSTALLED_KEY, "true");
+                    document.getElementById('installBanner').style.display = 'none';
+                }
                 deferredPrompt = null;
-                document.getElementById('installBanner').style.display = 'none';
             });
+        } else {
+            showToast("Gunakan menu browser 'Tambahkan ke Layar Utama'", "bg-info text-dark");
         }
     }
 
-    // --- INISIALISASI HALAMAN ---
+    // --- INISIALISASI HALAMAN & PEMUATAN DATA ANTI-ERROR ---
     document.addEventListener("DOMContentLoaded", function() {
         initAppDefaults();
+        updateInstallBannerVisibility();
+        
+        // Muat cache lokal terlebih dahulu agar tampilan instan & tahan gangguan jaringan
+        loadFromLocalCache();
+        // Kemudian sinkronkan dengan server Google Sheets
         loadData(true);
     });
+
+    function loadFromLocalCache() {
+        try {
+            const cached = localStorage.getItem(STORAGE_CACHE_KEY);
+            if (cached) {
+                const parsed = JSON.parse(cached);
+                if (parsed && parsed.dashboard && parsed.inventaris) {
+                    appData = parsed;
+                    renderAllViews();
+                }
+            }
+        } catch (err) {
+            console.warn("Cache lokal diabaikan:", err);
+        }
+    }
+
+    function renderAllViews() {
+        if (!appData) return;
+        renderDashboard();
+        renderBarang();
+        renderTransaksi();
+        renderWarga();
+    }
 
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
@@ -893,43 +1022,74 @@
     async function loadData(silent = false) {
         if(!GAS_URL) return showToast("URL GAS belum diatur!", "bg-danger");
         if(!silent) showLoader();
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // Batas waktu tunggu 15 detik
+
         try {
-            const response = await fetch(GAS_URL + "?action=get_all");
+            const response = await fetch(GAS_URL + "?action=get_all", { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!response.ok) throw new Error("HTTP Status " + response.status);
             const result = await response.json();
-            if(result.status === "success") {
-                appData = result;
-                renderDashboard();
-                renderBarang();
-                renderTransaksi();
-                renderWarga();
+
+            if(result && result.status === "success") {
+                appData = {
+                    dashboard: result.dashboard || { total_stok: 0, total_dipinjam: 0, macam_barang: 0 },
+                    inventaris: Array.isArray(result.inventaris) ? result.inventaris : [],
+                    transaksi: Array.isArray(result.transaksi) ? result.transaksi : [],
+                    warga: Array.isArray(result.warga) ? result.warga : []
+                };
+                localStorage.setItem(STORAGE_CACHE_KEY, JSON.stringify(appData));
+                document.getElementById('offlineNotice').style.display = 'none';
+                renderAllViews();
+                if(!silent) showToast("Data berhasil disinkronkan!", "bg-success");
             } else {
-                if(!silent) showToast("Error Server: " + result.message, "bg-danger");
+                throw new Error(result.message || "Respon server tidak valid");
             }
         } catch(e) {
-            if(!silent) showToast("Gagal memuat database. Periksa koneksi internet.", "bg-danger");
+            clearTimeout(timeoutId);
+            document.getElementById('offlineNotice').style.display = 'block';
+            if(!appData) loadFromLocalCache();
+            if(!silent) showToast("Koneksi terganggu, menampilkan data cadangan.", "bg-warning text-dark");
+        } finally {
+            if(!silent) hideLoader();
         }
-        if(!silent) hideLoader();
     }
 
     async function sendPostRequest(payload, successMsg = "Data berhasil diperbarui!") {
+        if (isSubmitting) return; // Cegah pengiriman ganda
+        isSubmitting = true;
         showLoader();
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 18000);
+
         try {
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ data: JSON.stringify(payload) })
+                body: new URLSearchParams({ data: JSON.stringify(payload) }),
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
+
+            if (!response.ok) throw new Error("HTTP Status " + response.status);
             const result = await response.json();
-            if(result.status === "success") {
+
+            if(result && result.status === "success") {
                 await loadData(true);
                 showToast(successMsg, "bg-success");
             } else {
-                showToast("Gagal: " + result.message, "bg-danger");
+                showToast("Gagal: " + (result.message || "Kesalahan server"), "bg-danger");
             }
         } catch (e) {
-            showToast("Gagal mengirim data. Terjadi kesalahan jaringan.", "bg-danger");
+            clearTimeout(timeoutId);
+            showToast("Gagal terhubung ke server. Periksa koneksi internet Anda.", "bg-danger");
+        } finally {
+            isSubmitting = false;
+            hideLoader();
         }
-        hideLoader();
     }
 
     function hapusData(sheet, id) {
@@ -964,33 +1124,34 @@
     function resetModalBarang() { document.getElementById('formBarang').reset(); document.getElementById('inpBarangIdLama').value = ""; document.getElementById('titleModalBarang').innerText = "Tambah Master Barang"; openModal('modalBarang'); }
     function editBarang(namaLama, totalAwal) { document.getElementById('inpBarangIdLama').value = namaLama; document.getElementById('inpBarangNama').value = namaLama; document.getElementById('inpBarangStok').value = totalAwal; document.getElementById('titleModalBarang').innerText = "Edit Master Barang"; openModal('modalBarang'); }
     function resetModalWarga() { document.getElementById('formWarga').reset(); document.getElementById('inpWargaId').value = ""; document.getElementById('titleModalWarga').innerText = "Tambah Data Warga"; openModal('modalWarga'); }
-    function editWarga(idWarga) { const w = appData.warga.find(x => x.id == idWarga); if(w) { document.getElementById('inpWargaId').value = w.id; document.getElementById('inpWargaNama').value = w.nama; document.getElementById('inpWargaKet').value = w.keterangan; document.getElementById('titleModalWarga').innerText = "Edit Data Warga"; openModal('modalWarga'); } }
+    function editWarga(idWarga) { if(!appData) return; const w = appData.warga.find(x => x.id == idWarga); if(w) { document.getElementById('inpWargaId').value = w.id; document.getElementById('inpWargaNama').value = w.nama; document.getElementById('inpWargaKet').value = w.keterangan; document.getElementById('titleModalWarga').innerText = "Edit Data Warga"; openModal('modalWarga'); } }
     function resetModalTransaksi() { document.getElementById('formTransaksi').reset(); document.getElementById('inpTransId').value = ""; document.getElementById('titleModalTransaksi').innerText = "Catat Transaksi Baru"; openModal('modalTransaksi'); }
-    function editTransaksi(idTrans) { const t = appData.transaksi.find(x => x.id == idTrans); if(t) { document.getElementById('inpTransId').value = t.id; document.getElementById('inpTransJenis').value = t.jenis; document.getElementById('inpTransBarang').value = t.barang; document.getElementById('inpTransJumlah').value = t.jumlah; document.getElementById('inpTransWarga').value = t.warga; document.getElementById('inpTransPetugas').value = t.petugas; document.getElementById('titleModalTransaksi').innerText = "Edit Transaksi"; openModal('modalTransaksi'); } }
+    function editTransaksi(idTrans) { if(!appData) return; const t = appData.transaksi.find(x => x.id == idTrans); if(t) { document.getElementById('inpTransId').value = t.id; document.getElementById('inpTransJenis').value = t.jenis; document.getElementById('inpTransBarang').value = t.barang; document.getElementById('inpTransJumlah').value = t.jumlah; document.getElementById('inpTransWarga').value = t.warga; document.getElementById('inpTransPetugas').value = t.petugas; document.getElementById('titleModalTransaksi').innerText = "Edit Transaksi"; openModal('modalTransaksi'); } }
 
     function renderDashboard() {
-        document.getElementById('dash-macam').innerText = appData.dashboard.macam_barang;
-        document.getElementById('dash-stok').innerText = appData.dashboard.total_stok;
-        document.getElementById('dash-pinjam').innerText = appData.dashboard.total_dipinjam;
+        const dash = appData.dashboard || { macam_barang: 0, total_stok: 0, total_dipinjam: 0 };
+        document.getElementById('dash-macam').innerText = dash.macam_barang || 0;
+        document.getElementById('dash-stok').innerText = dash.total_stok || 0;
+        document.getElementById('dash-pinjam').innerText = dash.total_dipinjam || 0;
         
-        let totalKeseluruhan = appData.dashboard.total_stok + appData.dashboard.total_dipinjam;
+        let totalKeseluruhan = (parseInt(dash.total_stok) || 0) + (parseInt(dash.total_dipinjam) || 0);
         document.getElementById('dash-total').innerText = totalKeseluruhan;
 
         const cardNotif = document.getElementById('card-pinjam-notif');
-        if (appData.dashboard.total_dipinjam > 0) cardNotif.classList.add('pulse-danger'); else cardNotif.classList.remove('pulse-danger');
+        if ((dash.total_dipinjam || 0) > 0) cardNotif.classList.add('pulse-danger'); else cardNotif.classList.remove('pulse-danger');
 
         const listPinjam = document.getElementById('dash-pinjam-list'); listPinjam.innerHTML = "";
-        const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
+        const dataPinjam = (appData.transaksi || []).filter(t => t.status === 'Dipinjam');
         if(dataPinjam.length === 0) listPinjam.innerHTML = `<small class="text-muted">Tidak ada warga meminjam barang.</small>`;
         else dataPinjam.forEach(t => {
-            listPinjam.innerHTML += `<div class="list-warga-item border-left-warning"><div><strong class="text-dark fs-5">${t.warga}</strong><br><small class="text-muted">Pinjam: <b>${t.barang}</b> (Qty: ${t.jumlah})</small><br><small class="text-secondary" style="font-size: 0.75rem;"><i class="fas fa-user-check"></i> Petugas: ${t.petugas}</small></div><button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="kembalikanBarang('${t.id}')"><i class="fas fa-check"></i> Kembali</button></div>`;
+            listPinjam.innerHTML += `<div class="list-warga-item border-left-warning"><div><strong class="text-dark fs-5">${escapeHTML(t.warga)}</strong><br><small class="text-muted">Pinjam: <b>${escapeHTML(t.barang)}</b> (Qty: ${escapeHTML(t.jumlah)})</small><br><small class="text-secondary" style="font-size: 0.75rem;"><i class="fas fa-user-check"></i> Petugas: ${escapeHTML(t.petugas)}</small></div><button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="kembalikanBarang('${escapeJSArg(t.id)}')"><i class="fas fa-check"></i> Kembali</button></div>`;
         });
 
         const listKembali = document.getElementById('dash-kembali-list'); listKembali.innerHTML = "";
-        const dataKembali = appData.transaksi.filter(t => t.status === 'Dikembalikan');
+        const dataKembali = (appData.transaksi || []).filter(t => t.status === 'Dikembalikan');
         if(dataKembali.length === 0) listKembali.innerHTML = `<small class="text-muted">Belum ada riwayat pengembalian.</small>`;
         else dataKembali.slice(0, 5).forEach(t => {
-            listKembali.innerHTML += `<div class="list-warga-item border-left-success"><div><strong class="text-dark fs-5">${t.warga}</strong><br><small class="text-muted">Kembali: <b>${t.barang}</b> (Qty: ${t.jumlah})</small></div><div class="text-end" style="font-size:0.75rem;"><span class="badge bg-success mb-1">Selesai</span><br><span class="text-muted">Petugas: ${t.petugas}</span></div></div>`;
+            listKembali.innerHTML += `<div class="list-warga-item border-left-success"><div><strong class="text-dark fs-5">${escapeHTML(t.warga)}</strong><br><small class="text-muted">Kembali: <b>${escapeHTML(t.barang)}</b> (Qty: ${escapeHTML(t.jumlah)})</small></div><div class="text-end" style="font-size:0.75rem;"><span class="badge bg-success mb-1">Selesai</span><br><span class="text-muted">Petugas: ${escapeHTML(t.petugas)}</span></div></div>`;
         });
     }
 
@@ -1002,10 +1163,11 @@
             return;
         }
         appData.inventaris.forEach(b => {
-            let totalAwal = b.stok + b.dipinjam;
-            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${b.nama}', ${totalAwal})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${b.nama}')"><i class="fas fa-trash"></i></button>`;
-            tbody.innerHTML += `<tr><td class="fw-bold">${b.nama}</td><td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td><td class="text-center"><span class="badge bg-success">${b.stok}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${b.dipinjam}</span></td><td class="text-nowrap text-center">${aksiBtn}</td></tr>`;
-            selectBarang.innerHTML += `<option value="${b.nama}">${b.nama} (Tersedia: ${b.stok})</option>`;
+            let totalAwal = (parseInt(b.stok) || 0) + (parseInt(b.dipinjam) || 0);
+            let safeNama = escapeJSArg(b.nama);
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editBarang('${safeNama}', ${totalAwal})"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Barang', '${safeNama}')"><i class="fas fa-trash"></i></button>`;
+            tbody.innerHTML += `<tr><td class="fw-bold">${escapeHTML(b.nama)}</td><td class="text-center"><span class="badge bg-info text-dark">${totalAwal}</span></td><td class="text-center"><span class="badge bg-success">${escapeHTML(b.stok)}</span></td><td class="text-center"><span class="badge bg-warning text-dark">${escapeHTML(b.dipinjam)}</span></td><td class="text-nowrap text-center">${aksiBtn}</td></tr>`;
+            selectBarang.innerHTML += `<option value="${escapeHTML(b.nama)}">${escapeHTML(b.nama)} (Tersedia: ${escapeHTML(b.stok)})</option>`;
         });
     }
 
@@ -1028,9 +1190,10 @@
             else if(t.status === 'Rusak') statusHtml = `<span class="badge bg-danger">Rusak</span>`;
             else if(t.status === 'Sumbangan') statusHtml = `<span class="badge bg-info text-dark">Sumbangan</span>`;
 
-            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editTransaksi('${t.id}')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Transaksi', '${t.id}')"><i class="fas fa-trash"></i></button>`;
+            let safeId = escapeJSArg(t.id);
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editTransaksi('${safeId}')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Transaksi', '${safeId}')"><i class="fas fa-trash"></i></button>`;
 
-            tbody.innerHTML += `<tr><td><small>${t.tanggal}</small></td><td><span class="badge bg-${badgeColor}">${t.jenis}</span></td><td>${statusHtml}</td><td class="fw-bold">${t.barang}</td><td>${t.jumlah}</td><td class="fw-bold text-primary">${t.warga}</td><td>${t.petugas}</td><td>${aksiBtn}</td></tr>`;
+            tbody.innerHTML += `<tr><td><small>${escapeHTML(t.tanggal)}</small></td><td><span class="badge bg-${badgeColor}">${escapeHTML(t.jenis)}</span></td><td>${statusHtml}</td><td class="fw-bold">${escapeHTML(t.barang)}</td><td>${escapeHTML(t.jumlah)}</td><td class="fw-bold text-primary">${escapeHTML(t.warga)}</td><td>${escapeHTML(t.petugas)}</td><td>${aksiBtn}</td></tr>`;
         });
     }
 
@@ -1042,37 +1205,69 @@
             return;
         }
 
-        appData.warga.sort((a,b) => a.nama.localeCompare(b.nama));
-        appData.warga.forEach(w => {
-            selectWarga.innerHTML += `<option value="${w.nama}">${w.nama} (${w.keterangan})</option>`;
-            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editWarga('${w.id}')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Warga', '${w.id}')"><i class="fas fa-trash"></i></button>`;
-            tableWarga.innerHTML += `<tr><td class="fw-bold text-primary"><i class="fas fa-user-circle me-1"></i> ${w.nama}</td><td>${w.keterangan}</td><td>${aksiBtn}</td></tr>`;
+        const sortedWarga = [...appData.warga].sort((a,b) => String(a.nama).localeCompare(String(b.nama)));
+        sortedWarga.forEach(w => {
+            selectWarga.innerHTML += `<option value="${escapeHTML(w.nama)}">${escapeHTML(w.nama)} (${escapeHTML(w.keterangan)})</option>`;
+            let safeId = escapeJSArg(w.id);
+            let aksiBtn = `<button class="btn btn-sm btn-outline-primary" onclick="editWarga('${safeId}')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="hapusData('Warga', '${safeId}')"><i class="fas fa-trash"></i></button>`;
+            tableWarga.innerHTML += `<tr><td class="fw-bold text-primary"><i class="fas fa-user-circle me-1"></i> ${escapeHTML(w.nama)}</td><td>${escapeHTML(w.keterangan)}</td><td>${aksiBtn}</td></tr>`;
         });
     }
 
     document.getElementById('formBarang').addEventListener('submit', function(e) {
         e.preventDefault();
+        const namaBarang = document.getElementById('inpBarangNama').value.trim();
+        const stokAwal = parseInt(document.getElementById('inpBarangStok').value);
+        if (!namaBarang || isNaN(stokAwal) || stokAwal < 0) {
+            showToast("Nama barang dan jumlah stok harus valid!", "bg-danger");
+            return;
+        }
         let idLama = document.getElementById('inpBarangIdLama').value;
-        let payload = { action: idLama ? 'edit_barang' : 'tambah_barang', nama: document.getElementById('inpBarangNama').value, stok_awal: document.getElementById('inpBarangStok').value };
+        let payload = { action: idLama ? 'edit_barang' : 'tambah_barang', nama: namaBarang, stok_awal: stokAwal };
         if(idLama) payload.id_lama = idLama;
         sendPostRequest(payload, "Data barang disimpan!"); closeModal('modalBarang'); this.reset();
     });
 
     document.getElementById('formWarga').addEventListener('submit', function(e) {
         e.preventDefault();
+        const namaWarga = document.getElementById('inpWargaNama').value.trim();
+        const ketWarga = document.getElementById('inpWargaKet').value.trim();
+        if (!namaWarga || !ketWarga) {
+            showToast("Nama warga dan keterangan wajib diisi!", "bg-danger");
+            return;
+        }
         let idWarga = document.getElementById('inpWargaId').value;
-        let payload = { action: idWarga ? 'edit_warga' : 'tambah_warga', nama_warga: document.getElementById('inpWargaNama').value, keterangan_warga: document.getElementById('inpWargaKet').value };
+        let payload = { action: idWarga ? 'edit_warga' : 'tambah_warga', nama_warga: namaWarga, keterangan_warga: ketWarga };
         if(idWarga) payload.id = idWarga;
         sendPostRequest(payload, "Data warga disimpan!"); closeModal('modalWarga'); this.reset();
     });
 
     document.getElementById('formTransaksi').addEventListener('submit', function(e) {
         e.preventDefault();
-        let idTrans = document.getElementById('inpTransId').value;
+        const idTrans = document.getElementById('inpTransId').value;
+        const jenis = document.getElementById('inpTransJenis').value;
+        const barang = document.getElementById('inpTransBarang').value;
+        const jumlah = parseInt(document.getElementById('inpTransJumlah').value) || 0;
+        const warga = document.getElementById('inpTransWarga').value;
+        const petugas = document.getElementById('inpTransPetugas').value.trim();
+
+        if (!barang || !warga || !petugas || jumlah < 1) {
+            showToast("Lengkapi seluruh data transaksi dengan benar!", "bg-danger");
+            return;
+        }
+
+        // Validasi stok saat transaksi baru (Pinjam / Rusak)
+        if (!idTrans && (jenis === 'Barang Di pinjam' || jenis === 'Barang rusak') && appData && appData.inventaris) {
+            const item = appData.inventaris.find(x => x.nama === barang);
+            if (item && jumlah > item.stok) {
+                showToast(`Stok tidak mencukupi! Tersedia: ${item.stok}`, "bg-danger");
+                return;
+            }
+        }
+
         let payload = {
             action: idTrans ? 'edit_transaksi' : 'tambah_transaksi',
-            jenis: document.getElementById('inpTransJenis').value, barang: document.getElementById('inpTransBarang').value,
-            jumlah: document.getElementById('inpTransJumlah').value, warga: document.getElementById('inpTransWarga').value, petugas: document.getElementById('inpTransPetugas').value
+            jenis: jenis, barang: barang, jumlah: jumlah, warga: warga, petugas: petugas
         };
         if(idTrans) payload.id = idTrans;
         sendPostRequest(payload, "Transaksi berhasil dicatat!"); closeModal('modalTransaksi'); this.reset(); 
@@ -1094,13 +1289,13 @@
         let d = new Date(); let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
         let text = `==========================\n 📋 NOTA ${headerTitle.toUpperCase()}\n 📍 ${headerAddr}\n==========================\nTanggal : ${dateStr}\nAdmin   : Sistem RT\n--------------------------\n📦 STATUS STOK BARANG :\n`;
         
-        appData.inventaris.forEach(b => { 
-            let totAwal = b.stok + b.dipinjam;
+        (appData.inventaris || []).forEach(b => { 
+            let totAwal = (parseInt(b.stok) || 0) + (parseInt(b.dipinjam) || 0);
             text += `> ${b.nama}\n   Jml Awal : ${totAwal}\n   Tersedia : ${b.stok}\n   Dipinjam : ${b.dipinjam}\n`; 
         });
         
         text += "--------------------------\n";
-        const dataPinjam = appData.transaksi.filter(t => t.status === 'Dipinjam');
+        const dataPinjam = (appData.transaksi || []).filter(t => t.status === 'Dipinjam');
         if (dataPinjam.length > 0) {
             text += "⚠️ SEDANG DIPINJAM :\n";
             dataPinjam.forEach(p => { text += `- ${p.warga} (${p.barang}: ${p.jumlah})\n`; });
