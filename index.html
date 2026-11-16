@@ -13,17 +13,82 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #f4f6f9; padding-bottom: 95px; }
-        .card-stat { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s; }
+        body { background-color: #f4f6f9; padding-bottom: 110px; }
+        
+        /* Header Atas Diperbesar & Seimbang */
+        .app-header {
+            background: linear-gradient(135deg, #1c2024 0%, #2b3036 100%);
+            padding: 16px 0;
+            border-bottom: 3px solid #ffc107;
+        }
+        .header-logo-img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #ffffff;
+            padding: 4px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+        .header-title-text {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            line-height: 1.2;
+            color: #ffffff;
+            margin: 0;
+        }
+        .header-address-text {
+            font-size: 0.76rem;
+            color: #adb5bd;
+            line-height: 1.25;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .card-stat { border-radius: 14px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s; }
         .card-stat:active { transform: scale(0.95); }
         .table-container { background: white; padding: 18px; border-radius: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Navigasi Bawah */
-        .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-around; padding: 10px 0 8px 0; z-index: 1030; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        .nav-item-bottom { text-align: center; color: #6c757d; text-decoration: none; font-size: 0.72rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; width: 20%; transition: 0.2s; cursor: pointer; }
-        .nav-item-bottom i { font-size: 1.35rem; margin-bottom: 4px; }
-        .nav-item-bottom.active-tab { color: #0d6efd; transform: translateY(-2px); }
-        .nav-item-bottom.active-tab i { color: #0d6efd !important; }
+        /* Navigasi Bawah Diperbesar & Seimbang dengan Header Atas */
+        .bottom-navbar { 
+            position: fixed; 
+            bottom: 0; left: 0; right: 0; 
+            background-color: #ffffff; 
+            box-shadow: 0 -5px 18px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center;
+            padding: 14px 4px 14px 4px; 
+            z-index: 1030; 
+            border-top-left-radius: 22px; 
+            border-top-right-radius: 22px;
+            border-top: 1px solid #e9ecef;
+        }
+        .nav-item-bottom { 
+            text-align: center; 
+            color: #5c636a; 
+            text-decoration: none; 
+            font-size: 0.78rem; 
+            font-weight: 700; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 20%; 
+            transition: 0.2s; 
+            cursor: pointer; 
+        }
+        .nav-item-bottom i { 
+            font-size: 1.55rem; 
+            margin-bottom: 5px; 
+        }
+        .nav-item-bottom.active-tab { 
+            color: #0d6efd; 
+            transform: translateY(-2px); 
+        }
+        .nav-item-bottom.active-tab i { 
+            color: #0d6efd !important; 
+        }
 
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 9998; text-align: center; padding-top: 30vh; }
         .list-warga-item { background-color: #ffffff; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
@@ -134,7 +199,8 @@
         <div class="pin-logo-wrap">
             <img src="inventarisrt.png" alt="Logo Inventaris RT">
         </div>
-        <h5 class="fw-bold mb-1" style="letter-spacing: 0.5px;">INVENTARIS GUDANG RT</h5>
+        <h5 class="fw-bold mb-0" style="letter-spacing: 0.5px;" id="lockScreenTitle">INVENTARIS RT</h5>
+        <small class="text-info d-block mb-1" id="lockScreenAddress">GPM Blok N10 - Cangkiran, Mijen</small>
         <small class="text-white-50" id="lockSubtitle">Masukkan 6 Digit PIN Admin</small>
 
         <!-- View 1: Input Keypad PIN -->
@@ -212,23 +278,27 @@
 <!-- ==================== APLIKASI UTAMA ==================== -->
 <div id="loader"><div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3 text-primary fw-bold">Memproses...</h4></div>
 
-<nav class="navbar navbar-dark bg-dark mb-3 shadow-sm sticky-top">
+<!-- HEADER ATAS DIPERBESAR & SEIMBANG -->
+<header class="app-header mb-3 shadow sticky-top">
     <div class="container d-flex justify-content-between align-items-center">
-        <span class="navbar-brand mb-0 h1 fw-bold d-flex align-items-center" style="cursor:pointer;" onclick="switchTab('dashboard')" title="Kembali ke Dashboard">
-            <img src="inventarisrt.png" alt="Logo" width="30" height="30" class="rounded me-2 bg-white p-1">
-            INVENTARIS RT
-        </span>
-        <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-outline-info" onclick="switchTab('dashboard')" id="btnHomeTop" style="display:none;" title="Beranda Dashboard">
-                <i class="fas fa-home"></i> Home
+        <div class="d-flex align-items-center" style="cursor:pointer; max-width: 72%;" onclick="switchTab('dashboard')" title="Kembali ke Dashboard">
+            <img src="inventarisrt.png" alt="Logo" class="header-logo-img me-2 flex-shrink-0">
+            <div class="overflow-hidden">
+                <h1 class="header-title-text text-truncate" id="headerAppTitle">INVENTARIS RT</h1>
+                <span class="header-address-text text-truncate" id="headerAppAddress"><i class="fas fa-map-marker-alt text-warning me-1"></i>GPM Blok N10 - Cangkiran, Mijen</span>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <button class="btn btn-sm btn-outline-info py-1 px-2" onclick="switchTab('dashboard')" id="btnHomeTop" style="display:none;" title="Beranda Dashboard">
+                <i class="fas fa-home"></i>
             </button>
-            <span class="badge bg-secondary">v1.17</span>
-            <button class="btn btn-sm btn-outline-warning" onclick="lockApp()" title="Kunci Aplikasi">
+            <span class="badge bg-secondary py-2 px-2">v1.18</span>
+            <button class="btn btn-sm btn-warning text-dark fw-bold py-1 px-2 shadow-sm" onclick="lockApp()" title="Kunci Aplikasi">
                 <i class="fas fa-lock"></i>
             </button>
         </div>
     </div>
-</nav>
+</header>
 
 <div class="container">
     
@@ -251,10 +321,10 @@
     <!-- ==================== TAB 1: DASHBOARD UTAMA ==================== -->
     <div id="tab-dashboard" class="app-tab-view">
         <div class="row mb-3">
-            <div class="col-6 mb-3"><div class="card card-stat bg-primary text-white h-100 text-center p-2" onclick="switchTab('barang')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Macam Barang</h6><h3 class="mb-0 fw-bold" id="dash-macam">0</h3></div></div>
-            <div class="col-6 mb-3"><div class="card card-stat bg-info text-dark h-100 text-center p-2" onclick="switchTab('barang')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Total Jml Awal</h6><h3 class="mb-0 fw-bold" id="dash-total">0</h3></div></div>
-            <div class="col-6 mb-2"><div class="card card-stat bg-success text-white h-100 text-center p-2" onclick="switchTab('barang')"><h6 style="font-size:0.75rem; margin-bottom:2px;">Stok Tersedia</h6><h3 class="mb-0 fw-bold" id="dash-stok">0</h3></div></div>
-            <div class="col-6 mb-2"><div class="card card-stat bg-warning text-dark h-100 text-center p-2" id="card-pinjam-notif" onclick="switchTab('transaksi')"><h6 style="font-size:0.75rem; margin-bottom:2px; font-weight:bold;">Sedang Dipinjam</h6><h3 class="mb-0 fw-bold" id="dash-pinjam">0</h3></div></div>
+            <div class="col-6 mb-3"><div class="card card-stat bg-primary text-white h-100 text-center p-3" onclick="switchTab('barang')"><h6 style="font-size:0.78rem; margin-bottom:4px;">Macam Barang</h6><h3 class="mb-0 fw-bold" id="dash-macam">0</h3></div></div>
+            <div class="col-6 mb-3"><div class="card card-stat bg-info text-dark h-100 text-center p-3" onclick="switchTab('barang')"><h6 style="font-size:0.78rem; margin-bottom:4px; font-weight:bold;">Total Jml Awal</h6><h3 class="mb-0 fw-bold" id="dash-total">0</h3></div></div>
+            <div class="col-6 mb-2"><div class="card card-stat bg-success text-white h-100 text-center p-3" onclick="switchTab('barang')"><h6 style="font-size:0.78rem; margin-bottom:4px;">Stok Tersedia</h6><h3 class="mb-0 fw-bold" id="dash-stok">0</h3></div></div>
+            <div class="col-6 mb-2"><div class="card card-stat bg-warning text-dark h-100 text-center p-3" id="card-pinjam-notif" onclick="switchTab('transaksi')"><h6 style="font-size:0.78rem; margin-bottom:4px; font-weight:bold;">Sedang Dipinjam</h6><h3 class="mb-0 fw-bold" id="dash-pinjam">0</h3></div></div>
         </div>
 
         <div class="row mb-2">
@@ -345,11 +415,11 @@
     <!-- FOOTER BRANDING -->
     <div class="text-center mt-4 mb-4 pb-3">
         <h6 class="text-secondary fw-bold mb-1"><i class="fas fa-bolt text-warning"></i> Powered By Ari GPM</h6>
-        <small class="text-muted d-block">Versi Update Terkini: v1.17</small>
+        <small class="text-muted d-block">Versi Update Terkini: v1.18</small>
     </div>
 </div>
 
-<!-- Navigasi Bawah -->
+<!-- Navigasi Bawah Diperbesar & Seimbang -->
 <nav class="bottom-navbar">
     <a class="nav-item-bottom" id="nav-barang" onclick="switchTab('barang')"><i class="fas fa-box-open text-primary"></i><span>Barang</span></a>
     <a class="nav-item-bottom" id="nav-transaksi" onclick="switchTab('transaksi')"><i class="fas fa-exchange-alt text-danger"></i><span>Transaksi</span></a>
@@ -358,7 +428,7 @@
     <a class="nav-item-bottom" onclick="openSettingsModal()"><i class="fas fa-cog text-dark"></i><span>Pengaturan</span></a>
 </nav>
 
-<!-- ==================== MODAL PENGATURAN (PIN, QUESTION, RESET) ==================== -->
+<!-- ==================== MODAL PENGATURAN (IDENTITAS, PIN, RESET) ==================== -->
 <div class="modal fade" id="modalSettings" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow">
@@ -367,8 +437,31 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+
+        <!-- Bagian 1: Identitas Header & Alamat RT -->
+        <div class="card border-success mb-4">
+            <div class="card-header bg-success text-white fw-bold">
+                <i class="fas fa-building me-1"></i> Identitas Header & Alamat
+            </div>
+            <div class="card-body">
+                <form id="formIdentitySettings">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Nama Header Aplikasi</label>
+                        <input type="text" class="form-control fw-bold" id="setHeaderTitle" placeholder="Contoh: INVENTARIS RT 01 / RW 01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Alamat / Keterangan Wilayah</label>
+                        <input type="text" class="form-control" id="setHeaderAddress" placeholder="Contoh: GPM Blok N10, Cangkiran, Mijen" required>
+                        <small class="text-muted">Tampil di header atas, layar kunci, dan kop laporan WA.</small>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bold">
+                        <i class="fas fa-check-circle me-1"></i> Simpan Nama & Alamat
+                    </button>
+                </form>
+            </div>
+        </div>
         
-        <!-- Bagian 1: Pengaturan Keamanan PIN & Pertanyaan Pemulihan -->
+        <!-- Bagian 2: Pengaturan Keamanan PIN & Pertanyaan Pemulihan -->
         <div class="card border-primary mb-4">
             <div class="card-header bg-primary text-white fw-bold">
                 <i class="fas fa-user-shield me-1"></i> Keamanan PIN & Pemulihan
@@ -396,7 +489,7 @@
             </div>
         </div>
 
-        <!-- Bagian 2: Zona Reset Database -->
+        <!-- Bagian 3: Zona Reset Database -->
         <div class="card border-danger">
             <div class="card-header bg-danger text-white fw-bold">
                 <i class="fas fa-exclamation-triangle me-1"></i> Zona Reset Database
@@ -508,37 +601,51 @@
     const STORAGE_PIN_KEY = "inventaris_rt_pin";
     const STORAGE_Q_KEY = "inventaris_rt_sec_q";
     const STORAGE_A_KEY = "inventaris_rt_sec_a";
+    const STORAGE_TITLE_KEY = "inventaris_rt_header_title";
+    const STORAGE_ADDR_KEY = "inventaris_rt_header_addr";
 
     const DEFAULT_PIN = "123456";
     const DEFAULT_QUESTION = "Apa nama perumahan atau wilayah RT ini?";
     const DEFAULT_ANSWER = "GPM";
+    const DEFAULT_TITLE = "INVENTARIS RT";
+    const DEFAULT_ADDRESS = "GPM Blok N10 - Cangkiran, Mijen";
 
     let enteredPin = "";
     let appData = null;
     let deferredPrompt;
     let pendingConfirmCallback = null;
 
-    function initSecurityDefaults() {
+    function initAppDefaults() {
         if (!localStorage.getItem(STORAGE_PIN_KEY)) localStorage.setItem(STORAGE_PIN_KEY, DEFAULT_PIN);
         if (!localStorage.getItem(STORAGE_Q_KEY)) localStorage.setItem(STORAGE_Q_KEY, DEFAULT_QUESTION);
         if (!localStorage.getItem(STORAGE_A_KEY)) localStorage.setItem(STORAGE_A_KEY, DEFAULT_ANSWER);
+        if (!localStorage.getItem(STORAGE_TITLE_KEY)) localStorage.setItem(STORAGE_TITLE_KEY, DEFAULT_TITLE);
+        if (!localStorage.getItem(STORAGE_ADDR_KEY)) localStorage.setItem(STORAGE_ADDR_KEY, DEFAULT_ADDRESS);
+        applyIdentityUI();
+    }
+
+    function applyIdentityUI() {
+        const title = localStorage.getItem(STORAGE_TITLE_KEY) || DEFAULT_TITLE;
+        const address = localStorage.getItem(STORAGE_ADDR_KEY) || DEFAULT_ADDRESS;
+
+        document.getElementById('headerAppTitle').innerText = title;
+        document.getElementById('headerAppAddress').innerHTML = `<i class="fas fa-map-marker-alt text-warning me-1"></i>${address}`;
+        document.getElementById('lockScreenTitle').innerText = title;
+        document.getElementById('lockScreenAddress').innerText = address;
+        document.title = title;
     }
 
     // --- NAVIGASI TAB HALAMAN ---
     function switchTab(tabName) {
-        // Sembunyikan semua view
         document.querySelectorAll('.app-tab-view').forEach(el => el.style.display = 'none');
         
-        // Tampilkan view yang dipilih
         const targetView = document.getElementById('tab-' + tabName);
         if (targetView) targetView.style.display = 'block';
 
-        // Atur status aktif pada navigasi bawah
         document.querySelectorAll('.nav-item-bottom').forEach(nav => nav.classList.remove('active-tab'));
         const activeNav = document.getElementById('nav-' + tabName);
         if (activeNav) activeNav.classList.add('active-tab');
 
-        // Tampilkan tombol Home di header atas jika sedang tidak berada di Dashboard
         const btnHome = document.getElementById('btnHomeTop');
         if (btnHome) {
             btnHome.style.display = (tabName === 'dashboard') ? 'none' : 'inline-block';
@@ -659,11 +766,30 @@
 
     // --- LOGIKA MODAL PENGATURAN ---
     function openSettingsModal() {
+        document.getElementById('setHeaderTitle').value = localStorage.getItem(STORAGE_TITLE_KEY) || DEFAULT_TITLE;
+        document.getElementById('setHeaderAddress').value = localStorage.getItem(STORAGE_ADDR_KEY) || DEFAULT_ADDRESS;
         document.getElementById('setPinBaru').value = localStorage.getItem(STORAGE_PIN_KEY) || DEFAULT_PIN;
         document.getElementById('setPertanyaan').value = localStorage.getItem(STORAGE_Q_KEY) || DEFAULT_QUESTION;
         document.getElementById('setJawaban').value = localStorage.getItem(STORAGE_A_KEY) || DEFAULT_ANSWER;
         openModal('modalSettings');
     }
+
+    document.getElementById('formIdentitySettings').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newTitle = document.getElementById('setHeaderTitle').value.trim();
+        const newAddr = document.getElementById('setHeaderAddress').value.trim();
+
+        if (!newTitle || !newAddr) {
+            showToast("Nama header dan alamat tidak boleh kosong!", "bg-danger");
+            return;
+        }
+
+        localStorage.setItem(STORAGE_TITLE_KEY, newTitle);
+        localStorage.setItem(STORAGE_ADDR_KEY, newAddr);
+        applyIdentityUI();
+        closeModal('modalSettings');
+        showToast("Nama header & alamat berhasil diperbarui!", "bg-success");
+    });
 
     document.getElementById('formSecuritySettings').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -754,7 +880,7 @@
 
     // --- INISIALISASI HALAMAN ---
     document.addEventListener("DOMContentLoaded", function() {
-        initSecurityDefaults();
+        initAppDefaults();
         loadData(true);
     });
 
@@ -963,8 +1089,10 @@
 
     function previewWA() {
         if(!appData) return showToast("Data belum termuat!", "bg-warning text-dark");
+        const headerTitle = localStorage.getItem(STORAGE_TITLE_KEY) || DEFAULT_TITLE;
+        const headerAddr = localStorage.getItem(STORAGE_ADDR_KEY) || DEFAULT_ADDRESS;
         let d = new Date(); let dateStr = d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
-        let text = "==========================\n 📋 NOTA INVENTARIS RT \n==========================\nTanggal : " + dateStr + "\nAdmin   : Sistem RT\n--------------------------\n📦 STATUS STOK BARANG :\n";
+        let text = `==========================\n 📋 NOTA ${headerTitle.toUpperCase()}\n 📍 ${headerAddr}\n==========================\nTanggal : ${dateStr}\nAdmin   : Sistem RT\n--------------------------\n📦 STATUS STOK BARANG :\n`;
         
         appData.inventaris.forEach(b => { 
             let totAwal = b.stok + b.dipinjam;
