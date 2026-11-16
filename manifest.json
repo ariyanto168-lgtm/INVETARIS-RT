@@ -1,0 +1,16 @@
+{
+  "name": "Inventaris Gudang RT",
+  "short_name": "Inventaris RT",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#212529",
+  "icons": [
+    {
+      "src": "inventarisrt.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
